@@ -10,7 +10,7 @@ ap  : doc '/' rp   #singleAP
     ;
 
 // doc
-doc : DOC '(' '"'filename'"' ')';
+doc: 'doc(' fileName ')' | 'document(' fileName ')';
 
 // relative path
 rp  : tagName       #tagRP
@@ -30,6 +30,7 @@ rp  : tagName       #tagRP
 f   : rp            #rpFilter
     | rp EQ rp      #eqFilter
     | rp IS rp      #isFilter
+    | rp '=' STRING #stringFilter
     | '(' f ')'     #braceFilter
     | f 'and' f     #andFilter
     | f 'or' f      #orFilter
@@ -38,13 +39,30 @@ f   : rp            #rpFilter
 
  tagName: ID;
  attName: ID;
+ fileName: STRING;
 
  EQ: '=' | 'eq';
  IS: '==' | 'is';
- ID: [a-zA-Z0-9_-]+ ;
+ ID: [_a-zA-Z][a-zA-Z_0-9]*;
 
- DOC: 'doc' | 'document';
- filename: FILENAME;
- FILENAME: [a-zA-Z0-9._]+;
+ STRING:
+    '"'
+    (
+       ESCAPE
+       | ~["\\]
+    )* '"'
+    | '\''
+    (
+       ESCAPE
+       | ~['\\]
+    )* '\''
+ ;
+
+ ESCAPE:
+    '\\'
+    (
+       ['"\\]
+    )
+ ;
 
  WHITESPACE:[ \t\n\r]+ -> skip;
