@@ -1,5 +1,6 @@
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$CommaRPContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$SingleSlashRPContext.class
+edu/ucsd/cse232b/Antlr4Xpath/XpathParser$StringFilterContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$DoubleAPContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$BraceFilterContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$TextRPContext.class
@@ -13,6 +14,7 @@ edu/ucsd/cse232b/Antlr4Xpath/XpathParser$OrFilterContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$AttRPContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$EqFilterContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$DocContext.class
+edu/ucsd/cse232b/XpathImpl/XpathEngine.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$FilenameContext.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathLexer.class
 edu/ucsd/cse232b/Antlr4Xpath/XpathParser$AndFilterContext.class

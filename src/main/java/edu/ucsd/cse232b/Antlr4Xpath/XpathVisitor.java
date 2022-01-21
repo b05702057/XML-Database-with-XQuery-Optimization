@@ -138,6 +138,13 @@ public interface XpathVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRpFilter(XpathParser.RpFilterContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stringFilter}
+	 * labeled alternative in {@link XpathParser#f}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringFilter(XpathParser.StringFilterContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code braceFilter}
 	 * labeled alternative in {@link XpathParser#f}.
 	 * @param ctx the parse tree
