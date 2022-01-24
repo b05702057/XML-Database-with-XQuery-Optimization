@@ -58,7 +58,7 @@ FILENAME: [a-zA-Z0-9._]+;
        | ~['\\]
     )* '\''
  ;
- escape: ESCAPE;
+// escape: ESCAPE;
  ESCAPE
  :
     '\\'
@@ -66,5 +66,4 @@ FILENAME: [a-zA-Z0-9._]+;
        ['"\\]
     )
  ;
-
  WHITESPACE:[ \t\n\r]+ -> skip;

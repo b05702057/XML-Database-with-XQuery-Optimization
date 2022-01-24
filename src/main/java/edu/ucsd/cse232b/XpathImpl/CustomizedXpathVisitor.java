@@ -32,6 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 * (7) text nodes and attribute nodes, child nodes?
 */
 
+
 public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     private static final Logger logger = Logger.getLogger(CustomizedXpathVisitor.class.getName());
     LinkedList<Node> frontierNodes = new LinkedList<Node>(); // the nodes under the current path
@@ -193,7 +194,6 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         this.frontierNodes = visit(ctx.rp(0));
         return visit(ctx.rp(1));
     }
-
 
     @Override
     public LinkedList<Node> visitEqFilter(XpathParser.EqFilterContext ctx) {
