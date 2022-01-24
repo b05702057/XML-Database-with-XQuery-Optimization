@@ -64,5 +64,4 @@ f   : rp            #rpFilter
        ['"\\]
     )
  ;
-
  WHITESPACE:[ \t\n\r]+ -> skip;
