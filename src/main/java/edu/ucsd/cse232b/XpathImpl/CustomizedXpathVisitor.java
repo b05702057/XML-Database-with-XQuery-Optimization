@@ -1,6 +1,6 @@
 package edu.ucsd.cse232b.XpathImpl;
 
-import com.apple.laf.AquaButtonBorder;
+//import com.apple.laf.AquaButtonBorder;
 import edu.ucsd.cse232b.Antlr4Xpath.*;
 
 import java.io.IOException;
@@ -76,7 +76,8 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         // https://mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
         // https://docs.oracle.com/javase/tutorial/jaxp/dom/readingXML.html
         logger.info("visit Doc node");
-        File xmlFile = new File(ctx.filename().getText());
+        String fileName = ctx.fileName().STRING().getText();
+        File xmlFile = new File(fileName.substring(1, fileName.length() - 1));
         LinkedList<Node> res = new LinkedList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setIgnoringElementContentWhitespace(true);
@@ -217,7 +218,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                         res.add(node);
         }
 
-        this.frontierNodes = res;
+        //this.frontierNodes = res;
         return res;
     }
 
@@ -243,7 +244,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                         res.add(node);
         }
 
-        this.frontierNodes = res;
+        //this.frontierNodes = res;
         return res;
     }
 
@@ -257,7 +258,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                 res.add(node);
         }
 
-        this.frontierNodes = res;
+        //this.frontierNodes = res;
         return res;
     }
 
@@ -290,8 +291,8 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
 
         current.removeAll(diff);
-
         res = new LinkedList<>(current);
+
         return res;
     }
 
@@ -312,23 +313,17 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     @Override
     public LinkedList<Node> visitStringFilter(XpathParser.StringFilterContext ctx) {
         logger.info("visit StringFilter");
-        LinkedList<Node> tmp = this.frontierNodes;
         LinkedList<Node> res = new LinkedList<>();
+        String str = ctx.STRING().getText();
+        str = str.substring(1, str.length() - 1);
 
-        for (Node node: tmp) {
-            LinkedList<Node> evalNode = new LinkedList<>();
-            evalNode.add(node);
-            this.frontierNodes = evalNode;
-
-            LinkedList<Node> l = visit(ctx.rp());
-            String str = ctx.STRING().getText();
-
-            for (Node ln: l)
-                if (str == ln.getNodeName() && !res.contains(node)) // name or value? attribute? tag? different types?
-                    res.add(node);
+        this.frontierNodes = visit(ctx.rp());
+        for (Node node: this.frontierNodes) {
+            if (node.getNodeName() == str && !res.contains(node))
+                res.add(node);
         }
 
-        this.frontierNodes = res;
+        //this.frontierNodes = res;
         return res;
     }
 
@@ -352,7 +347,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         logger.info("visit AttName");
         LinkedList<Node> res = new LinkedList<>(); // result nodes
 
-        for (Node node: this.frontierNodes){
+        for (Node node : this.frontierNodes) {
             Node attNode = node.getAttributes().getNamedItem(ctx.getText());
             if (attNode != null)
                 res.add(attNode);
@@ -362,7 +357,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     }
 
 //    @Override
-//    public LinkedList<Node> visitFilename(XpathParser.FilenameContext ctx) {
+//    public LinkedList<Node> visitFileName(XpathParser.FileNameContext ctx) {
 //
 //    }
 }
