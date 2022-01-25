@@ -18,27 +18,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-/*
-* (1) variable names: frontierNodes, evalNode
-* (2) Do we need evalNode?
-* (3) The definition of frontier nodes should not change.
- * => It should always be the nodes that satisfy current conditions, and we don't need to modify the value for a specific traversal.
-* (4) redundant assignment or return => "this.frontierNodes = res" and "return res"
-* (5) Should we use the KMP algorithm? Is the O(N * M) time complexity tolerable?
-* (6) visitDoc and visitFileName?
-* (7) text nodes and attribute nodes, child nodes?
-*/
 
 public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     private static final Logger logger = Logger.getLogger(CustomizedXpathVisitor.class.getName());
-    LinkedList<Node> frontierNodes = new LinkedList<Node>(); // the nodes under the current path
+    LinkedList<Node> frontierNodes = new LinkedList<>(); // the nodes under the current path
 
     // get all children and sub children for the double slash condition
     public LinkedList<Node> getAllChildren(Node node) {
         LinkedList<Node> res = new LinkedList<>(); // result
 
         NodeList childrenNodes = node.getChildNodes();
-        Node curChild;
+        Node curChild; // current child
         for (int i = 0; i < childrenNodes.getLength(); i++) {
             curChild = childrenNodes.item(i);
             res.add(curChild); // add a child
@@ -47,31 +37,31 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         return res;
     }
 
-    // visit "//RP"
     public LinkedList<Node> visitDoubleSlash(XpathParser.RpContext ctx) {
         LinkedList<Node> tmp = new LinkedList<>();
         for (Node node : this.frontierNodes) {
             tmp.addAll(getAllChildren(node)); // all children nodes
         }
-        this.frontierNodes.addAll(tmp);
-//        for (Node node : this.frontierNodes) {
-//            System.out.println(node.getNodeName());
-//        }
-//        System.out.println("");
+        for (Node node : tmp) {
+            // Edge Case => The query is doc("file")//A//A, and the DOM tree consists only A nodes.
+            if (!this.frontierNodes.contains(node)) {
+                this.frontierNodes.add(node);
+            }
+        }
         return visit(ctx);
     }
 
     @Override
     public LinkedList<Node> visitSingleAP(XpathParser.SingleAPContext ctx) { // single slash
+        logger.info("visit single AP node");
         this.frontierNodes = visit(ctx.doc()); // Only the document root node is in the list.
         return visit(ctx.rp());
     }
 
     @Override
     public LinkedList<Node> visitDoubleAP(XpathParser.DoubleAPContext ctx) { // double slash (need to traverse the whole tree)
+        logger.info("visit double AP node");
         this.frontierNodes = visit(ctx.doc()); // Only the document root node is in the list.
-
-        NodeList test =  this.frontierNodes.getFirst().getChildNodes();
         return visitDoubleSlash(ctx.rp());
     }
 
@@ -84,14 +74,13 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         File xmlFile = new File(fileName.substring(1, fileName.length() - 1));
         LinkedList<Node> res = new LinkedList<>();
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setIgnoringElementContentWhitespace(true);
+        dbf.setIgnoringElementContentWhitespace(true);  // eliminate white space in element content
 
         try {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(xmlFile);
-            doc.getDocumentElement().normalize();
+            doc.getDocumentElement().normalize();  // as a node
             res.add(doc);
-            this.frontierNodes = res;
         } catch (IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
@@ -100,22 +89,20 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
 
     @Override
     public LinkedList<Node> visitDoubleSlashRP(XpathParser.DoubleSlashRPContext ctx) {
+        logger.info("visit double RP node");
         this.frontierNodes = visit(ctx.rp(0)); // nodes that satisfy the first RP
         return visitDoubleSlash(ctx.rp(1));
     }
 
     @Override
     public LinkedList<Node> visitTextRP(XpathParser.TextRPContext ctx) {
-        NodeList children;
-        Node child;
+        String curText;
+        String text = ctx.getText();
         LinkedList<Node> res = new LinkedList<>();
         for (Node node : this.frontierNodes) {
-            children = node.getChildNodes();
-            for (int i = 0; i < children.getLength(); i++) { // iterate the children to find the text nodes
-                child = children.item(i);
-                //if (child.getTextContent() == ctx.getText()) {
-                    res.add(child);
-                //}
+            curText = node.getTextContent();
+            if (curText.equals(text)) {
+                res.add(node);
             }
         }
         return res;
