@@ -171,9 +171,9 @@ public interface XpathVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAttName(XpathParser.AttNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link XpathParser#filename}.
+	 * Visit a parse tree produced by {@link XpathParser#fileName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFilename(XpathParser.FilenameContext ctx);
+	T visitFileName(XpathParser.FileNameContext ctx);
 }

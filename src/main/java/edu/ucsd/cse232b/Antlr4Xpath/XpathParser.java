@@ -21,31 +21,30 @@ public class XpathParser extends Parser {
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
 		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
-		T__17=18, T__18=19, EQ=20, IS=21, ID=22, FILENAME=23, STRING=24, ESCAPE=25, 
-		WHITESPACE=26;
+		T__17=18, EQ=19, IS=20, ID=21, STRING=22, ESCAPE=23, WHITESPACE=24;
 	public static final int
 		RULE_ap = 0, RULE_doc = 1, RULE_rp = 2, RULE_f = 3, RULE_tagName = 4, 
-		RULE_attName = 5, RULE_filename = 6;
+		RULE_attName = 5, RULE_fileName = 6;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"ap", "doc", "rp", "f", "tagName", "attName", "filename"
+			"ap", "doc", "rp", "f", "tagName", "attName", "fileName"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'/'", "'//'", "'doc(\"'", "'\")'", "'document(\"'", "'*'", "'.'", 
-			"'..'", "'text()'", "'@'", "'('", "')'", "'['", "']'", "','", "'='", 
-			"'and'", "'or'", "'not'"
+			null, "'/'", "'//'", "'doc('", "')'", "'document('", "'*'", "'.'", "'..'", 
+			"'text()'", "'@'", "'('", "'['", "']'", "','", "'='", "'and'", "'or'", 
+			"'not'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, null, "EQ", "IS", "ID", "FILENAME", 
-			"STRING", "ESCAPE", "WHITESPACE"
+			null, null, null, null, null, null, null, "EQ", "IS", "ID", "STRING", 
+			"ESCAPE", "WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -184,8 +183,8 @@ public class XpathParser extends Parser {
 	}
 
 	public static class DocContext extends ParserRuleContext {
-		public FilenameContext filename() {
-			return getRuleContext(FilenameContext.class,0);
+		public FileNameContext fileName() {
+			return getRuleContext(FileNameContext.class,0);
 		}
 		public DocContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -211,7 +210,7 @@ public class XpathParser extends Parser {
 				setState(24);
 				match(T__2);
 				setState(25);
-				filename();
+				fileName();
 				setState(26);
 				match(T__3);
 				}
@@ -222,7 +221,7 @@ public class XpathParser extends Parser {
 				setState(28);
 				match(T__4);
 				setState(29);
-				filename();
+				fileName();
 				setState(30);
 				match(T__3);
 				}
@@ -449,7 +448,7 @@ public class XpathParser extends Parser {
 				setState(43);
 				rp(0);
 				setState(44);
-				match(T__11);
+				match(T__3);
 				}
 				break;
 			default:
@@ -498,7 +497,7 @@ public class XpathParser extends Parser {
 						setState(54);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 						setState(55);
-						match(T__14);
+						match(T__13);
 						setState(56);
 						rp(2);
 						}
@@ -510,11 +509,11 @@ public class XpathParser extends Parser {
 						setState(57);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(58);
-						match(T__12);
+						match(T__11);
 						setState(59);
 						f(0);
 						setState(60);
-						match(T__13);
+						match(T__12);
 						}
 						break;
 					}
@@ -714,7 +713,7 @@ public class XpathParser extends Parser {
 				setState(77);
 				rp(0);
 				setState(78);
-				match(T__15);
+				match(T__14);
 				setState(79);
 				match(STRING);
 				}
@@ -729,7 +728,7 @@ public class XpathParser extends Parser {
 				setState(82);
 				f(0);
 				setState(83);
-				match(T__11);
+				match(T__3);
 				}
 				break;
 			case 6:
@@ -738,7 +737,7 @@ public class XpathParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(85);
-				match(T__18);
+				match(T__17);
 				setState(86);
 				f(1);
 				}
@@ -763,7 +762,7 @@ public class XpathParser extends Parser {
 						setState(89);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
 						setState(90);
-						match(T__16);
+						match(T__15);
 						setState(91);
 						f(4);
 						}
@@ -775,7 +774,7 @@ public class XpathParser extends Parser {
 						setState(92);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
 						setState(93);
-						match(T__17);
+						match(T__16);
 						setState(94);
 						f(3);
 						}
@@ -868,27 +867,27 @@ public class XpathParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FilenameContext extends ParserRuleContext {
-		public TerminalNode FILENAME() { return getToken(XpathParser.FILENAME, 0); }
-		public FilenameContext(ParserRuleContext parent, int invokingState) {
+	public static class FileNameContext extends ParserRuleContext {
+		public TerminalNode STRING() { return getToken(XpathParser.STRING, 0); }
+		public FileNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_filename; }
+		@Override public int getRuleIndex() { return RULE_fileName; }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof XpathVisitor ) return ((XpathVisitor<? extends T>)visitor).visitFilename(this);
+			if ( visitor instanceof XpathVisitor ) return ((XpathVisitor<? extends T>)visitor).visitFileName(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final FilenameContext filename() throws RecognitionException {
-		FilenameContext _localctx = new FilenameContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_filename);
+	public final FileNameContext fileName() throws RecognitionException {
+		FileNameContext _localctx = new FileNameContext(_ctx, getState());
+		enterRule(_localctx, 12, RULE_fileName);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(104);
-			match(FILENAME);
+			match(STRING);
 			}
 		}
 		catch (RecognitionException re) {
@@ -935,7 +934,7 @@ public class XpathParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\34m\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\32m\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\3\2\3\2\3\2\3\2"+
 		"\3\2\5\2\31\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3#\n\3\3\4\3\4\3\4\3"+
 		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\61\n\4\3\4\3\4\3\4\3\4\3\4\3\4"+
@@ -949,20 +948,20 @@ public class XpathParser extends Parser {
 		"\2\32\33\7\5\2\2\33\34\5\16\b\2\34\35\7\6\2\2\35#\3\2\2\2\36\37\7\7\2"+
 		"\2\37 \5\16\b\2 !\7\6\2\2!#\3\2\2\2\"\32\3\2\2\2\"\36\3\2\2\2#\5\3\2\2"+
 		"\2$%\b\4\1\2%\61\5\n\6\2&\61\7\b\2\2\'\61\7\t\2\2(\61\7\n\2\2)\61\7\13"+
-		"\2\2*+\7\f\2\2+\61\5\f\7\2,-\7\r\2\2-.\5\6\4\2./\7\16\2\2/\61\3\2\2\2"+
-		"\60$\3\2\2\2\60&\3\2\2\2\60\'\3\2\2\2\60(\3\2\2\2\60)\3\2\2\2\60*\3\2"+
-		"\2\2\60,\3\2\2\2\61B\3\2\2\2\62\63\f\6\2\2\63\64\7\3\2\2\64A\5\6\4\7\65"+
-		"\66\f\5\2\2\66\67\7\4\2\2\67A\5\6\4\689\f\3\2\29:\7\21\2\2:A\5\6\4\4;"+
-		"<\f\4\2\2<=\7\17\2\2=>\5\b\5\2>?\7\20\2\2?A\3\2\2\2@\62\3\2\2\2@\65\3"+
-		"\2\2\2@8\3\2\2\2@;\3\2\2\2AD\3\2\2\2B@\3\2\2\2BC\3\2\2\2C\7\3\2\2\2DB"+
-		"\3\2\2\2EF\b\5\1\2FZ\5\6\4\2GH\5\6\4\2HI\7\26\2\2IJ\5\6\4\2JZ\3\2\2\2"+
-		"KL\5\6\4\2LM\7\27\2\2MN\5\6\4\2NZ\3\2\2\2OP\5\6\4\2PQ\7\22\2\2QR\7\32"+
-		"\2\2RZ\3\2\2\2ST\7\r\2\2TU\5\b\5\2UV\7\16\2\2VZ\3\2\2\2WX\7\25\2\2XZ\5"+
-		"\b\5\3YE\3\2\2\2YG\3\2\2\2YK\3\2\2\2YO\3\2\2\2YS\3\2\2\2YW\3\2\2\2Zc\3"+
-		"\2\2\2[\\\f\5\2\2\\]\7\23\2\2]b\5\b\5\6^_\f\4\2\2_`\7\24\2\2`b\5\b\5\5"+
-		"a[\3\2\2\2a^\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2d\t\3\2\2\2ec\3\2\2"+
-		"\2fg\7\30\2\2g\13\3\2\2\2hi\7\30\2\2i\r\3\2\2\2jk\7\31\2\2k\17\3\2\2\2"+
-		"\n\30\"\60@BYac";
+		"\2\2*+\7\f\2\2+\61\5\f\7\2,-\7\r\2\2-.\5\6\4\2./\7\6\2\2/\61\3\2\2\2\60"+
+		"$\3\2\2\2\60&\3\2\2\2\60\'\3\2\2\2\60(\3\2\2\2\60)\3\2\2\2\60*\3\2\2\2"+
+		"\60,\3\2\2\2\61B\3\2\2\2\62\63\f\6\2\2\63\64\7\3\2\2\64A\5\6\4\7\65\66"+
+		"\f\5\2\2\66\67\7\4\2\2\67A\5\6\4\689\f\3\2\29:\7\20\2\2:A\5\6\4\4;<\f"+
+		"\4\2\2<=\7\16\2\2=>\5\b\5\2>?\7\17\2\2?A\3\2\2\2@\62\3\2\2\2@\65\3\2\2"+
+		"\2@8\3\2\2\2@;\3\2\2\2AD\3\2\2\2B@\3\2\2\2BC\3\2\2\2C\7\3\2\2\2DB\3\2"+
+		"\2\2EF\b\5\1\2FZ\5\6\4\2GH\5\6\4\2HI\7\25\2\2IJ\5\6\4\2JZ\3\2\2\2KL\5"+
+		"\6\4\2LM\7\26\2\2MN\5\6\4\2NZ\3\2\2\2OP\5\6\4\2PQ\7\21\2\2QR\7\30\2\2"+
+		"RZ\3\2\2\2ST\7\r\2\2TU\5\b\5\2UV\7\6\2\2VZ\3\2\2\2WX\7\24\2\2XZ\5\b\5"+
+		"\3YE\3\2\2\2YG\3\2\2\2YK\3\2\2\2YO\3\2\2\2YS\3\2\2\2YW\3\2\2\2Zc\3\2\2"+
+		"\2[\\\f\5\2\2\\]\7\22\2\2]b\5\b\5\6^_\f\4\2\2_`\7\23\2\2`b\5\b\5\5a[\3"+
+		"\2\2\2a^\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2d\t\3\2\2\2ec\3\2\2\2fg"+
+		"\7\27\2\2g\13\3\2\2\2hi\7\27\2\2i\r\3\2\2\2jk\7\30\2\2k\17\3\2\2\2\n\30"+
+		"\"\60@BYac";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

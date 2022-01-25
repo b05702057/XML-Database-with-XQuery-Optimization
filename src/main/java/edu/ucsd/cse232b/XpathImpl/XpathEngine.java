@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
@@ -25,7 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 // https://abcdabcd987.com/notes-on-antlr4/
 public class XpathEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XpathQuery/test1";
+        String XpathQuery = "testcase/XpathQuery/test6";
         String resFilename = "testcase/XpathResult/res1";
         LinkedList<Node> res;
         Document output;
@@ -60,6 +61,20 @@ public class XpathEngine {
             Transformer t = tf.newTransformer();
             t.setParameter(OutputKeys.INDENT, "yes");
             t.setParameter("{http://xml.apache.org/xslt}indent-amount", "4");
+
+            // create a file if it doesn't exist
+            File myObj = new File(outputFilename);
+            try {
+                if (myObj.createNewFile()) {
+                    System.out.println("File created: " + myObj.getName());
+                } else {
+                    System.out.println("File already exists.");
+                }
+            } catch (IOException e) {
+                System.out.println("An error occurred.");
+                e.printStackTrace();
+            }
+
             t.transform(new DOMSource(doc), new StreamResult(outputFilename));
         } catch (TransformerException e) {
             e.printStackTrace();

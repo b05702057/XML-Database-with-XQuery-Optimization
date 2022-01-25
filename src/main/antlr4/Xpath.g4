@@ -9,7 +9,7 @@ ap  : doc '/' rp   #singleAP
     ;
 
 // doc
-doc: 'doc("' filename '")' | 'document("' filename '")';
+doc: 'doc(' fileName ')' | 'document(' fileName ')';
 
 // relative path
 rp  : tagName       #tagRP
@@ -38,15 +38,13 @@ f   : rp            #rpFilter
 
  tagName: ID;
  attName: ID;
+ fileName: STRING;
 
  EQ: '=' | 'eq';
  IS: '==' | 'is';
  ID: [_a-zA-Z][a-zA-Z_0-9]*;
 
-filename: FILENAME;
-FILENAME: [a-zA-Z0-9._]+;
- STRING
- :
+ STRING:
     '"'
     (
        ESCAPE
@@ -58,9 +56,8 @@ FILENAME: [a-zA-Z0-9._]+;
        | ~['\\]
     )* '\''
  ;
-// escape: ESCAPE;
- ESCAPE
- :
+
+ ESCAPE:
     '\\'
     (
        ['"\\]
