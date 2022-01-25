@@ -110,6 +110,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         Node child;
         LinkedList<Node> res = new LinkedList<>();
         for (Node node : this.frontierNodes) {
+            //logger.info(node.getNodeName());
             children = node.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) { // iterate the children to find the text nodes
                 child = children.item(i);
@@ -118,7 +119,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                 //}
             }
         }
-        return res;
+        return this.frontierNodes;
     }
 
     @Override
@@ -255,8 +256,12 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     public LinkedList<Node> visitRpFilter(XpathParser.RpFilterContext ctx) {
         logger.info("visit RpFilter");
         LinkedList<Node> res = new LinkedList<>();
+        LinkedList<Node> tmp = this.frontierNodes;
 
-        for (Node node: this.frontierNodes) {
+        for (Node node: tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
+            this.frontierNodes = evalNode;
             if (visit(ctx.rp()).size() != 0)
                 res.add(node);
         }
@@ -275,8 +280,11 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     public LinkedList<Node> visitOrFilter(XpathParser.OrFilterContext ctx) {
         logger.info("visit OrFilter");
         LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
 
         HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
         HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
 
         ls.addAll(rs);
@@ -291,13 +299,12 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         LinkedList<Node> res;
 
         HashSet<Node> current = new HashSet<>(this.frontierNodes);
-        //HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
-        LinkedList<Node> diff = visit(ctx.f());
-        logger.info(diff.getFirst().getNodeName());
+        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
 
         current.removeAll(diff);
         res = new LinkedList<>(current);
 
+        this.frontierNodes = res;
         return res;
     }
 
@@ -305,8 +312,11 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     public LinkedList<Node> visitAndFilter(XpathParser.AndFilterContext ctx) {
         logger.info("visit AndFilter");
         LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
 
         HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
         HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
 
         ls.retainAll(rs);
@@ -330,12 +340,12 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
             this.frontierNodes = evalNode;
 
             LinkedList<Node> l = visit(ctx.rp());
-            logger.info(l.getFirst().getNodeName()); // should be SPEAKER for test5
-            for (Node ln: l)
+            for (Node ln: l) {
                 if (ln.getTextContent().equals(str) && !res.contains(node)) {
                     logger.info("add a node");
                     res.add(node);
                 }
+            }
         }
 
         this.frontierNodes = res;
