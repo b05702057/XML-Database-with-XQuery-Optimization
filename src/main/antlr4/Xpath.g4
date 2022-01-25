@@ -3,7 +3,6 @@ grammar Xpath;
 @header {
 package edu.ucsd.cse232b.Antlr4Xpath;
 }
-
 // absolute path
 ap  : doc '/' rp   #singleAP
     | doc '//' rp  #doubleAP
