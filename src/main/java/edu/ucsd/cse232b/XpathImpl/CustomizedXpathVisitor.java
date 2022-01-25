@@ -1,16 +1,13 @@
 package edu.ucsd.cse232b.XpathImpl;
 
-//import com.apple.laf.AquaButtonBorder;
 import edu.ucsd.cse232b.Antlr4Xpath.*;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.io.File;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.graalvm.compiler.graph.NodeMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -52,10 +49,15 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
 
     // visit "//RP"
     public LinkedList<Node> visitDoubleSlash(XpathParser.RpContext ctx) {
-        LinkedList<Node> tmp = this.frontierNodes;
-        for (Node node : tmp){
-            this.frontierNodes.addAll(getAllChildren(node)); // all children nodes
+        LinkedList<Node> tmp = new LinkedList<>();
+        for (Node node : this.frontierNodes) {
+            tmp.addAll(getAllChildren(node)); // all children nodes
         }
+        this.frontierNodes.addAll(tmp);
+//        for (Node node : this.frontierNodes) {
+//            System.out.println(node.getNodeName());
+//        }
+//        System.out.println("");
         return visit(ctx);
     }
 
@@ -68,6 +70,8 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     @Override
     public LinkedList<Node> visitDoubleAP(XpathParser.DoubleAPContext ctx) { // double slash (need to traverse the whole tree)
         this.frontierNodes = visit(ctx.doc()); // Only the document root node is in the list.
+
+        NodeList test =  this.frontierNodes.getFirst().getChildNodes();
         return visitDoubleSlash(ctx.rp());
     }
 
@@ -91,7 +95,6 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         } catch (IOException | SAXException | ParserConfigurationException e) {
             e.printStackTrace();
         }
-
         return res;
     }
 
@@ -180,8 +183,9 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
             children = node.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) { // iterate the children to find the text nodes
                 child = children.item(i);
+                String childName = child.getNodeName();
                 String tagName = ctx.tagName().ID().toString();
-                if (child.getNodeName() == tagName)  {
+                if (childName.endsWith(tagName))  { // cannot use "=="
                     res.add(child);
                 }
             }
@@ -194,7 +198,6 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         this.frontierNodes = visit(ctx.rp(0));
         return visit(ctx.rp(1));
     }
-
 
     @Override
     public LinkedList<Node> visitEqFilter(XpathParser.EqFilterContext ctx) {
@@ -347,7 +350,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         logger.info("visit AttName");
         LinkedList<Node> res = new LinkedList<>(); // result nodes
 
-        for (Node node : this.frontierNodes) {
+        for (Node node: this.frontierNodes){
             Node attNode = node.getAttributes().getNamedItem(ctx.getText());
             if (attNode != null)
                 res.add(attNode);
@@ -355,9 +358,4 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         this.frontierNodes = res;
         return res;
     }
-
-//    @Override
-//    public LinkedList<Node> visitFileName(XpathParser.FileNameContext ctx) {
-//
-//    }
 }
