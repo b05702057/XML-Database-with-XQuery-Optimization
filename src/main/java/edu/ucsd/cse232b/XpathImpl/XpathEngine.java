@@ -26,7 +26,7 @@ import javax.xml.transform.stream.StreamResult;
 // https://abcdabcd987.com/notes-on-antlr4/
 public class XpathEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XpathQuery/test6";
+        String XpathQuery = "testcase/XpathQuery/test5";
         String resFilename = "testcase/XpathResult/res1";
         LinkedList<Node> res;
         Document output;
@@ -39,7 +39,6 @@ public class XpathEngine {
 
             CustomizedXpathVisitor visitor = new CustomizedXpathVisitor();
             res = visitor.visit(tree);
-
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             output = db.newDocument();
@@ -53,29 +52,19 @@ public class XpathEngine {
     public static void write2File(Document doc, LinkedList<Node> res, String outputFilename) {
         // https://www.titanwolf.org/Network/q/4e45060a-2293-47f3-aa12-3d67d3d96f6f/y
         Node root = doc.createElement("result");
-        for (Node node: res)
-            root.appendChild(node);
+        for (Node node: res) {
+            Node cNode = doc.importNode(node, true);
+            root.appendChild(cNode);
+        }
+        Node cRoot = doc.importNode(root, true);
+        doc.appendChild(cRoot);
 
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
             t.setParameter(OutputKeys.INDENT, "yes");
             t.setParameter("{http://xml.apache.org/xslt}indent-amount", "4");
-
-            // create a file if it doesn't exist
-            File myObj = new File(outputFilename);
-            try {
-                if (myObj.createNewFile()) {
-                    System.out.println("File created: " + myObj.getName());
-                } else {
-                    System.out.println("File already exists.");
-                }
-            } catch (IOException e) {
-                System.out.println("An error occurred.");
-                e.printStackTrace();
-            }
-
-            t.transform(new DOMSource(doc), new StreamResult(outputFilename));
+            t.transform(new DOMSource(doc), new StreamResult(new File(outputFilename)));
         } catch (TransformerException e) {
             e.printStackTrace();
         }

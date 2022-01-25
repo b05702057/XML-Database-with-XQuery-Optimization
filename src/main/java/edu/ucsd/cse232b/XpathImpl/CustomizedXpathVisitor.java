@@ -113,9 +113,9 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
             children = node.getChildNodes();
             for (int i = 0; i < children.getLength(); i++) { // iterate the children to find the text nodes
                 child = children.item(i);
-                if (child.getTextContent() == ctx.getText()) {
+                //if (child.getTextContent() == ctx.getText()) {
                     res.add(child);
-                }
+                //}
             }
         }
         return res;
@@ -221,7 +221,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                         res.add(node);
         }
 
-        //this.frontierNodes = res;
+        this.frontierNodes = res;
         return res;
     }
 
@@ -247,7 +247,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                         res.add(node);
         }
 
-        //this.frontierNodes = res;
+        this.frontierNodes = res;
         return res;
     }
 
@@ -261,7 +261,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
                 res.add(node);
         }
 
-        //this.frontierNodes = res;
+        this.frontierNodes = res;
         return res;
     }
 
@@ -291,7 +291,9 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
         LinkedList<Node> res;
 
         HashSet<Node> current = new HashSet<>(this.frontierNodes);
-        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
+        //HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
+        LinkedList<Node> diff = visit(ctx.f());
+        logger.info(diff.getFirst().getNodeName());
 
         current.removeAll(diff);
         res = new LinkedList<>(current);
@@ -317,16 +319,26 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     public LinkedList<Node> visitStringFilter(XpathParser.StringFilterContext ctx) {
         logger.info("visit StringFilter");
         LinkedList<Node> res = new LinkedList<>();
+        LinkedList<Node> tmp = this.frontierNodes;
+
         String str = ctx.STRING().getText();
         str = str.substring(1, str.length() - 1);
 
-        this.frontierNodes = visit(ctx.rp());
-        for (Node node: this.frontierNodes) {
-            if (node.getNodeName() == str && !res.contains(node))
-                res.add(node);
+        for (Node node: tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
+            this.frontierNodes = evalNode;
+
+            LinkedList<Node> l = visit(ctx.rp());
+            logger.info(l.getFirst().getNodeName()); // should be SPEAKER for test5
+            for (Node ln: l)
+                if (ln.getTextContent().equals(str) && !res.contains(node)) {
+                    logger.info("add a node");
+                    res.add(node);
+                }
         }
 
-        //this.frontierNodes = res;
+        this.frontierNodes = res;
         return res;
     }
 
