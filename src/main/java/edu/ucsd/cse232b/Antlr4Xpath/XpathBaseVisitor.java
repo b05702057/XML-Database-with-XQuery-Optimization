@@ -40,6 +40,13 @@ public class XpathBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitBraceRP(XpathParser.BraceRPContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitDoubleSlashRP(XpathParser.DoubleSlashRPContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

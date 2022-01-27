@@ -252,6 +252,17 @@ public class XpathParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
+	public static class BraceRPContext extends RpContext {
+		public RpContext rp() {
+			return getRuleContext(RpContext.class,0);
+		}
+		public BraceRPContext(RpContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof XpathVisitor ) return ((XpathVisitor<? extends T>)visitor).visitBraceRP(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class DoubleSlashRPContext extends RpContext {
 		public List<RpContext> rp() {
 			return getRuleContexts(RpContext.class);
@@ -440,7 +451,7 @@ public class XpathParser extends Parser {
 				break;
 			case T__10:
 				{
-				_localctx = new CommaRPContext(_localctx);
+				_localctx = new BraceRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(42);

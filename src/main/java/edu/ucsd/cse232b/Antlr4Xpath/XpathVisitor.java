@@ -33,6 +33,13 @@ public interface XpathVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDoc(XpathParser.DocContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code braceRP}
+	 * labeled alternative in {@link XpathParser#rp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBraceRP(XpathParser.BraceRPContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code doubleSlashRP}
 	 * labeled alternative in {@link XpathParser#rp}.
 	 * @param ctx the parse tree

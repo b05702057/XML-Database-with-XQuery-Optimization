@@ -170,6 +170,11 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     }
 
     @Override
+    public LinkedList<Node> visitBraceRP(XpathParser.BraceRPContext ctx) {
+        return visit(ctx.rp());
+    }
+
+    @Override
     public LinkedList<Node> visitChildrenRP(XpathParser.ChildrenRPContext ctx) {
         logger.info("visit children RP node");
         LinkedList<Node> res = new LinkedList<>();
@@ -250,6 +255,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
             evalNode.add(node);
 
             this.frontierNodes = evalNode;
+            logger.info("test" +ctx.rp(0).getText());
             LinkedList<Node> l = visit(ctx.rp(0));
 
             this.frontierNodes = evalNode;

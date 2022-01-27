@@ -18,7 +18,7 @@ rp  : tagName       #tagRP
     | '..'          #parentRP
     | 'text()'      #textRP
     | '@' attName   #attRP
-    | '(' rp ')'    #commaRP
+    | '(' rp ')'    #braceRP
     | rp '/' rp     #singleSlashRP
     | rp '//' rp    #doubleSlashRP
     | rp '[' f ']'  #filterRP
