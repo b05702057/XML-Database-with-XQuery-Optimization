@@ -13,6 +13,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+//import sun.awt.image.ImageWatched;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -97,16 +98,20 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     @Override
     public LinkedList<Node> visitTextRP(XpathParser.TextRPContext ctx) {
         logger.info("visit text RP node");
-        String curText;
-        String text = ctx.getText();
+        NodeList children;
+        Node child;
         LinkedList<Node> res = new LinkedList<>();
+
         for (Node node : this.frontierNodes) {
-            curText = node.getTextContent();
-            if (curText.equals(text)) {
-                res.add(node);
+            children = node.getChildNodes();
+            for (int i = 0; i < children.getLength(); i++) {
+                child = children.item(i);
+                if (child.getNodeType() == Node.TEXT_NODE) {
+                    res.add(child);
+                }
             }
         }
-        return this.frontierNodes;
+        return res;
     }
 
     @Override
@@ -361,7 +366,7 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
 
             LinkedList<Node> l = visit(ctx.rp());
             for (Node ln: l) {
-                if (ln.getTextContent().equals(str) && !res.contains(node)) {
+                if (ln.getNodeValue().equals(str) && !res.contains(node)) {
                     logger.info("add a node");
                     res.add(node);
                 }
@@ -389,7 +394,6 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
     public LinkedList<Node> visitAttName(XpathParser.AttNameContext ctx) {
         logger.info("visit AttName");
         LinkedList<Node> res = new LinkedList<>(); // result nodes
-
         for (Node node: this.frontierNodes){
             if (node.getNodeName().equals(ctx.getText())) {
                 res.add(node);
