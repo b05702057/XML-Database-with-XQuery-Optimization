@@ -384,13 +384,9 @@ public class CustomizedXpathVisitor extends XpathBaseVisitor<LinkedList>{
 
         // Frontier nodes are guaranteed to be element nodes.
         for (Node node: this.frontierNodes){
-            System.out.println(node.getNodeName());
-            System.out.println(ctx.getText());
-            System.out.println(node.getNodeName().equals(ctx.getText()));
             if (node.getNodeName().equals(ctx.getText()))
                 res.add(node);
         }
-        System.out.println(res.size());
         return res;
     }
 

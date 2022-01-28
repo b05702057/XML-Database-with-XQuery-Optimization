@@ -27,7 +27,7 @@ import javax.xml.transform.stream.StreamResult;
 public class XpathEngine {
     public static void main(String[] args) {
         String XpathQuery = "testcase/XpathQuery/test11";
-        String resFilename = "testcase/XpathResult/res1";
+        String resFilename = "testcase/XpathResult/res11";
         LinkedList<Node> res;
         Document output;
         try {
