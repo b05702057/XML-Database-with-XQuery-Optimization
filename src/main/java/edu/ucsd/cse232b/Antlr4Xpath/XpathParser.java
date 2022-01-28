@@ -20,8 +20,8 @@ public class XpathParser extends Parser {
 		new PredictionContextCache();
 	public static final int
 		T__0=1, T__1=2, T__2=3, T__3=4, T__4=5, T__5=6, T__6=7, T__7=8, T__8=9, 
-		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, T__16=17, 
-		T__17=18, EQ=19, IS=20, ID=21, STRING=22, ESCAPE=23, WHITESPACE=24;
+		T__9=10, T__10=11, T__11=12, T__12=13, T__13=14, T__14=15, T__15=16, DOC=17, 
+		EQ=18, IS=19, ID=20, STRING=21, ESCAPE=22, WHITESPACE=23;
 	public static final int
 		RULE_ap = 0, RULE_doc = 1, RULE_rp = 2, RULE_f = 3, RULE_tagName = 4, 
 		RULE_attName = 5, RULE_fileName = 6;
@@ -34,17 +34,16 @@ public class XpathParser extends Parser {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'/'", "'//'", "'doc('", "')'", "'document('", "'*'", "'.'", "'..'", 
-			"'text()'", "'@'", "'('", "'['", "']'", "','", "'='", "'and'", "'or'", 
-			"'not'"
+			null, "'/'", "'//'", "'('", "')'", "'*'", "'.'", "'..'", "'text()'", 
+			"'@'", "'['", "']'", "','", "'='", "'and'", "'or'", "'not'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
 	private static String[] makeSymbolicNames() {
 		return new String[] {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
-			null, null, null, null, null, null, null, "EQ", "IS", "ID", "STRING", 
-			"ESCAPE", "WHITESPACE"
+			null, null, null, null, null, "DOC", "EQ", "IS", "ID", "STRING", "ESCAPE", 
+			"WHITESPACE"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -183,6 +182,7 @@ public class XpathParser extends Parser {
 	}
 
 	public static class DocContext extends ParserRuleContext {
+		public TerminalNode DOC() { return getToken(XpathParser.DOC, 0); }
 		public FileNameContext fileName() {
 			return getRuleContext(FileNameContext.class,0);
 		}
@@ -201,33 +201,16 @@ public class XpathParser extends Parser {
 		DocContext _localctx = new DocContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_doc);
 		try {
-			setState(32);
-			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case T__2:
-				enterOuterAlt(_localctx, 1);
-				{
-				setState(24);
-				match(T__2);
-				setState(25);
-				fileName();
-				setState(26);
-				match(T__3);
-				}
-				break;
-			case T__4:
-				enterOuterAlt(_localctx, 2);
-				{
-				setState(28);
-				match(T__4);
-				setState(29);
-				fileName();
-				setState(30);
-				match(T__3);
-				}
-				break;
-			default:
-				throw new NoViableAltException(this);
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(24);
+			match(DOC);
+			setState(25);
+			match(T__2);
+			setState(26);
+			fileName();
+			setState(27);
+			match(T__3);
 			}
 		}
 		catch (RecognitionException re) {
@@ -389,7 +372,7 @@ public class XpathParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46);
+			setState(41);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ID:
@@ -398,67 +381,67 @@ public class XpathParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(35);
+				setState(30);
 				tagName();
 				}
 				break;
-			case T__5:
+			case T__4:
 				{
 				_localctx = new ChildrenRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(36);
+				setState(31);
+				match(T__4);
+				}
+				break;
+			case T__5:
+				{
+				_localctx = new SelfRPContext(_localctx);
+				_ctx = _localctx;
+				_prevctx = _localctx;
+				setState(32);
 				match(T__5);
 				}
 				break;
 			case T__6:
 				{
-				_localctx = new SelfRPContext(_localctx);
+				_localctx = new ParentRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(37);
+				setState(33);
 				match(T__6);
 				}
 				break;
 			case T__7:
 				{
-				_localctx = new ParentRPContext(_localctx);
+				_localctx = new TextRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(38);
+				setState(34);
 				match(T__7);
 				}
 				break;
 			case T__8:
 				{
-				_localctx = new TextRPContext(_localctx);
-				_ctx = _localctx;
-				_prevctx = _localctx;
-				setState(39);
-				match(T__8);
-				}
-				break;
-			case T__9:
-				{
 				_localctx = new AttRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(40);
-				match(T__9);
-				setState(41);
+				setState(35);
+				match(T__8);
+				setState(36);
 				attName();
 				}
 				break;
-			case T__10:
+			case T__2:
 				{
 				_localctx = new BraceRPContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(42);
-				match(T__10);
-				setState(43);
+				setState(37);
+				match(T__2);
+				setState(38);
 				rp(0);
-				setState(44);
+				setState(39);
 				match(T__3);
 				}
 				break;
@@ -466,26 +449,26 @@ public class XpathParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(64);
+			setState(59);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(62);
+					setState(57);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,2,_ctx) ) {
 					case 1:
 						{
 						_localctx = new SingleSlashRPContext(new RpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_rp);
-						setState(48);
+						setState(43);
 						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(49);
+						setState(44);
 						match(T__0);
-						setState(50);
+						setState(45);
 						rp(5);
 						}
 						break;
@@ -493,11 +476,11 @@ public class XpathParser extends Parser {
 						{
 						_localctx = new DoubleSlashRPContext(new RpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_rp);
-						setState(51);
+						setState(46);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(52);
+						setState(47);
 						match(T__1);
-						setState(53);
+						setState(48);
 						rp(4);
 						}
 						break;
@@ -505,11 +488,11 @@ public class XpathParser extends Parser {
 						{
 						_localctx = new CommaRPContext(new RpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_rp);
-						setState(54);
+						setState(49);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(55);
-						match(T__13);
-						setState(56);
+						setState(50);
+						match(T__11);
+						setState(51);
 						rp(2);
 						}
 						break;
@@ -517,22 +500,22 @@ public class XpathParser extends Parser {
 						{
 						_localctx = new FilterRPContext(new RpContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_rp);
-						setState(57);
+						setState(52);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(58);
-						match(T__11);
-						setState(59);
+						setState(53);
+						match(T__9);
+						setState(54);
 						f(0);
-						setState(60);
-						match(T__12);
+						setState(55);
+						match(T__10);
 						}
 						break;
 					}
 					} 
 				}
-				setState(66);
+				setState(61);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,4,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,3,_ctx);
 			}
 			}
 		}
@@ -677,16 +660,16 @@ public class XpathParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(87);
+			setState(82);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
+			switch ( getInterpreter().adaptivePredict(_input,4,_ctx) ) {
 			case 1:
 				{
 				_localctx = new RpFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(68);
+				setState(63);
 				rp(0);
 				}
 				break;
@@ -695,11 +678,11 @@ public class XpathParser extends Parser {
 				_localctx = new EqFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(69);
+				setState(64);
 				rp(0);
-				setState(70);
+				setState(65);
 				match(EQ);
-				setState(71);
+				setState(66);
 				rp(0);
 				}
 				break;
@@ -708,11 +691,11 @@ public class XpathParser extends Parser {
 				_localctx = new IsFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(73);
+				setState(68);
 				rp(0);
-				setState(74);
+				setState(69);
 				match(IS);
-				setState(75);
+				setState(70);
 				rp(0);
 				}
 				break;
@@ -721,11 +704,11 @@ public class XpathParser extends Parser {
 				_localctx = new StringFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(77);
+				setState(72);
 				rp(0);
-				setState(78);
-				match(T__14);
-				setState(79);
+				setState(73);
+				match(T__12);
+				setState(74);
 				match(STRING);
 				}
 				break;
@@ -734,11 +717,11 @@ public class XpathParser extends Parser {
 				_localctx = new BraceFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(81);
-				match(T__10);
-				setState(82);
+				setState(76);
+				match(T__2);
+				setState(77);
 				f(0);
-				setState(83);
+				setState(78);
 				match(T__3);
 				}
 				break;
@@ -747,34 +730,34 @@ public class XpathParser extends Parser {
 				_localctx = new NotFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(85);
-				match(T__17);
-				setState(86);
+				setState(80);
+				match(T__15);
+				setState(81);
 				f(1);
 				}
 				break;
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(97);
+			setState(92);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(95);
+					setState(90);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,5,_ctx) ) {
 					case 1:
 						{
 						_localctx = new AndFilterContext(new FContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_f);
-						setState(89);
+						setState(84);
 						if (!(precpred(_ctx, 3))) throw new FailedPredicateException(this, "precpred(_ctx, 3)");
-						setState(90);
-						match(T__15);
-						setState(91);
+						setState(85);
+						match(T__13);
+						setState(86);
 						f(4);
 						}
 						break;
@@ -782,20 +765,20 @@ public class XpathParser extends Parser {
 						{
 						_localctx = new OrFilterContext(new FContext(_parentctx, _parentState));
 						pushNewRecursionContext(_localctx, _startState, RULE_f);
-						setState(92);
+						setState(87);
 						if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-						setState(93);
-						match(T__16);
-						setState(94);
+						setState(88);
+						match(T__14);
+						setState(89);
 						f(3);
 						}
 						break;
 					}
 					} 
 				}
-				setState(99);
+				setState(94);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,7,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,6,_ctx);
 			}
 			}
 		}
@@ -829,7 +812,7 @@ public class XpathParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(100);
+			setState(95);
 			match(ID);
 			}
 		}
@@ -863,7 +846,7 @@ public class XpathParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(102);
+			setState(97);
 			match(ID);
 			}
 		}
@@ -897,7 +880,7 @@ public class XpathParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
+			setState(99);
 			match(STRING);
 			}
 		}
@@ -945,34 +928,32 @@ public class XpathParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\32m\4\2\t\2\4\3\t"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\31h\4\2\t\2\4\3\t"+
 		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\3\2\3\2\3\2\3\2\3\2\3\2\3\2"+
-		"\3\2\5\2\31\n\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3#\n\3\3\4\3\4\3\4\3"+
-		"\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4\61\n\4\3\4\3\4\3\4\3\4\3\4\3\4"+
-		"\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\7\4A\n\4\f\4\16\4D\13\4\3\5\3\5\3\5\3"+
-		"\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5"+
-		"Z\n\5\3\5\3\5\3\5\3\5\3\5\3\5\7\5b\n\5\f\5\16\5e\13\5\3\6\3\6\3\7\3\7"+
-		"\3\b\3\b\3\b\2\4\6\b\t\2\4\6\b\n\f\16\2\2\2x\2\30\3\2\2\2\4\"\3\2\2\2"+
-		"\6\60\3\2\2\2\bY\3\2\2\2\nf\3\2\2\2\fh\3\2\2\2\16j\3\2\2\2\20\21\5\4\3"+
-		"\2\21\22\7\3\2\2\22\23\5\6\4\2\23\31\3\2\2\2\24\25\5\4\3\2\25\26\7\4\2"+
-		"\2\26\27\5\6\4\2\27\31\3\2\2\2\30\20\3\2\2\2\30\24\3\2\2\2\31\3\3\2\2"+
-		"\2\32\33\7\5\2\2\33\34\5\16\b\2\34\35\7\6\2\2\35#\3\2\2\2\36\37\7\7\2"+
-		"\2\37 \5\16\b\2 !\7\6\2\2!#\3\2\2\2\"\32\3\2\2\2\"\36\3\2\2\2#\5\3\2\2"+
-		"\2$%\b\4\1\2%\61\5\n\6\2&\61\7\b\2\2\'\61\7\t\2\2(\61\7\n\2\2)\61\7\13"+
-		"\2\2*+\7\f\2\2+\61\5\f\7\2,-\7\r\2\2-.\5\6\4\2./\7\6\2\2/\61\3\2\2\2\60"+
-		"$\3\2\2\2\60&\3\2\2\2\60\'\3\2\2\2\60(\3\2\2\2\60)\3\2\2\2\60*\3\2\2\2"+
-		"\60,\3\2\2\2\61B\3\2\2\2\62\63\f\6\2\2\63\64\7\3\2\2\64A\5\6\4\7\65\66"+
-		"\f\5\2\2\66\67\7\4\2\2\67A\5\6\4\689\f\3\2\29:\7\20\2\2:A\5\6\4\4;<\f"+
-		"\4\2\2<=\7\16\2\2=>\5\b\5\2>?\7\17\2\2?A\3\2\2\2@\62\3\2\2\2@\65\3\2\2"+
-		"\2@8\3\2\2\2@;\3\2\2\2AD\3\2\2\2B@\3\2\2\2BC\3\2\2\2C\7\3\2\2\2DB\3\2"+
-		"\2\2EF\b\5\1\2FZ\5\6\4\2GH\5\6\4\2HI\7\25\2\2IJ\5\6\4\2JZ\3\2\2\2KL\5"+
-		"\6\4\2LM\7\26\2\2MN\5\6\4\2NZ\3\2\2\2OP\5\6\4\2PQ\7\21\2\2QR\7\30\2\2"+
-		"RZ\3\2\2\2ST\7\r\2\2TU\5\b\5\2UV\7\6\2\2VZ\3\2\2\2WX\7\24\2\2XZ\5\b\5"+
-		"\3YE\3\2\2\2YG\3\2\2\2YK\3\2\2\2YO\3\2\2\2YS\3\2\2\2YW\3\2\2\2Zc\3\2\2"+
-		"\2[\\\f\5\2\2\\]\7\22\2\2]b\5\b\5\6^_\f\4\2\2_`\7\23\2\2`b\5\b\5\5a[\3"+
-		"\2\2\2a^\3\2\2\2be\3\2\2\2ca\3\2\2\2cd\3\2\2\2d\t\3\2\2\2ec\3\2\2\2fg"+
-		"\7\27\2\2g\13\3\2\2\2hi\7\27\2\2i\r\3\2\2\2jk\7\30\2\2k\17\3\2\2\2\n\30"+
-		"\"\60@BYac";
+		"\3\2\5\2\31\n\2\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\4\3\4\3\4\3\4\5\4,\n\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3\4\3"+
+		"\4\3\4\3\4\7\4<\n\4\f\4\16\4?\13\4\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5"+
+		"\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\3\5\5\5U\n\5\3\5\3\5\3\5\3\5"+
+		"\3\5\3\5\7\5]\n\5\f\5\16\5`\13\5\3\6\3\6\3\7\3\7\3\b\3\b\3\b\2\4\6\b\t"+
+		"\2\4\6\b\n\f\16\2\2\2r\2\30\3\2\2\2\4\32\3\2\2\2\6+\3\2\2\2\bT\3\2\2\2"+
+		"\na\3\2\2\2\fc\3\2\2\2\16e\3\2\2\2\20\21\5\4\3\2\21\22\7\3\2\2\22\23\5"+
+		"\6\4\2\23\31\3\2\2\2\24\25\5\4\3\2\25\26\7\4\2\2\26\27\5\6\4\2\27\31\3"+
+		"\2\2\2\30\20\3\2\2\2\30\24\3\2\2\2\31\3\3\2\2\2\32\33\7\23\2\2\33\34\7"+
+		"\5\2\2\34\35\5\16\b\2\35\36\7\6\2\2\36\5\3\2\2\2\37 \b\4\1\2 ,\5\n\6\2"+
+		"!,\7\7\2\2\",\7\b\2\2#,\7\t\2\2$,\7\n\2\2%&\7\13\2\2&,\5\f\7\2\'(\7\5"+
+		"\2\2()\5\6\4\2)*\7\6\2\2*,\3\2\2\2+\37\3\2\2\2+!\3\2\2\2+\"\3\2\2\2+#"+
+		"\3\2\2\2+$\3\2\2\2+%\3\2\2\2+\'\3\2\2\2,=\3\2\2\2-.\f\6\2\2./\7\3\2\2"+
+		"/<\5\6\4\7\60\61\f\5\2\2\61\62\7\4\2\2\62<\5\6\4\6\63\64\f\3\2\2\64\65"+
+		"\7\16\2\2\65<\5\6\4\4\66\67\f\4\2\2\678\7\f\2\289\5\b\5\29:\7\r\2\2:<"+
+		"\3\2\2\2;-\3\2\2\2;\60\3\2\2\2;\63\3\2\2\2;\66\3\2\2\2<?\3\2\2\2=;\3\2"+
+		"\2\2=>\3\2\2\2>\7\3\2\2\2?=\3\2\2\2@A\b\5\1\2AU\5\6\4\2BC\5\6\4\2CD\7"+
+		"\24\2\2DE\5\6\4\2EU\3\2\2\2FG\5\6\4\2GH\7\25\2\2HI\5\6\4\2IU\3\2\2\2J"+
+		"K\5\6\4\2KL\7\17\2\2LM\7\27\2\2MU\3\2\2\2NO\7\5\2\2OP\5\b\5\2PQ\7\6\2"+
+		"\2QU\3\2\2\2RS\7\22\2\2SU\5\b\5\3T@\3\2\2\2TB\3\2\2\2TF\3\2\2\2TJ\3\2"+
+		"\2\2TN\3\2\2\2TR\3\2\2\2U^\3\2\2\2VW\f\5\2\2WX\7\20\2\2X]\5\b\5\6YZ\f"+
+		"\4\2\2Z[\7\21\2\2[]\5\b\5\5\\V\3\2\2\2\\Y\3\2\2\2]`\3\2\2\2^\\\3\2\2\2"+
+		"^_\3\2\2\2_\t\3\2\2\2`^\3\2\2\2ab\7\26\2\2b\13\3\2\2\2cd\7\26\2\2d\r\3"+
+		"\2\2\2ef\7\27\2\2f\17\3\2\2\2\t\30+;=T\\^";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

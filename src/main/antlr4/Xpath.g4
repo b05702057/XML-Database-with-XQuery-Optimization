@@ -9,9 +9,10 @@ ap  : doc '/' rp   #singleAP
     ;
 
 // doc
-doc: 'doc(' fileName ')' | 'document(' fileName ')';
+doc: DOC '(' fileName ')';
 
 // relative path
+// "#..." defines the node type in the tree.
 rp  : tagName       #tagRP
     | '*'           #childrenRP
     | '.'           #selfRP
@@ -40,15 +41,21 @@ f   : rp            #rpFilter
  attName: ID;
  fileName: STRING;
 
+// A lexer and a parser work in sequence.
+// The lexer scans the input and produces the matching tokens, the parser then scans the tokens and produces the parsing result.
+// We can also use only parsers and produce same rules.
+DOC: [dD][oO][cC];
+
  EQ: '=' | 'eq';
  IS: '==' | 'is';
  ID: [_a-zA-Z][a-zA-Z_0-9]*;
 
+//string: STRING;
  STRING:
     '"'
     (
        ESCAPE
-       | ~["\\]
+       | ~["\\] // excluding these characters
     )* '"'
     | '\''
     (
@@ -57,6 +64,7 @@ f   : rp            #rpFilter
     )* '\''
  ;
 
+//escape :ESCAPE;
  ESCAPE:
     '\\'
     (
