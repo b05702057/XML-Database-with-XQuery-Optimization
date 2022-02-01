@@ -26,8 +26,8 @@ import javax.xml.transform.stream.StreamResult;
 // https://abcdabcd987.com/notes-on-antlr4/
 public class XpathEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XpathQuery/test11";
-        String resFilename = "testcase/XpathResult/res11";
+        String XpathQuery = "testcase/XpathQuery/test16";
+        String resFilename = "testcase/XpathResult/res16";
         LinkedList<Node> res;
         Document output;
         try {
