@@ -1,30 +1,28 @@
-package edu.ucsd.cse232b.XpathImpl;
+package edu.ucsd.cse232b.XqueryImpl;
 
-import edu.ucsd.cse232b.Antlr4Xpath.XpathLexer;
-import edu.ucsd.cse232b.Antlr4Xpath.XpathParser;
+import edu.ucsd.cse232b.Antlr4Xquery.XqueryLexer;
+import edu.ucsd.cse232b.Antlr4Xquery.XqueryParser;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
 
-// https://github.com/ralotaib/ANTLR4Tutorial
-// https://abcdabcd987.com/notes-on-antlr4/
-public class XpathEngine {
+public class XqueryEngine {
     public static void main(String[] args) {
         String XpathQuery = "testcase/XpathQuery/test7";
         String resFilename = "testcase/XpathResult/res7";
@@ -33,11 +31,11 @@ public class XpathEngine {
         try {
             // https://stackoverflow.com/questions/50541321/antlrinputstream-and-antlrfilestream-are-deprecated-what-are-the-alternatives
             CharStream cs = CharStreams.fromFileName(XpathQuery);
-            XpathLexer lexer= new XpathLexer(cs);
-            XpathParser parser = new XpathParser((new CommonTokenStream((lexer))));
+            XqueryLexer lexer= new XqueryLexer(cs);
+            XqueryParser parser = new XqueryParser((new CommonTokenStream((lexer))));
             ParseTree tree = parser.ap();
 
-            CustomizedXpathVisitor visitor = new CustomizedXpathVisitor();
+            CustomizedXqueryVisitor visitor = new CustomizedXqueryVisitor();
             res = visitor.visit(tree);
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
