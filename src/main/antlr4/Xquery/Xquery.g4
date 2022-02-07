@@ -1,7 +1,8 @@
 grammar Xquery;
 
 @header {
-package edu.ucsd.cse232b.Antlr4Xquery;
+// The package keyword encapsulates a group of classes, sub packages and interfaces.
+package edu.ucsd.cse232b.Antlr4Xquery; // add the package name at the beginning of ANTLR generated Java files
 }
 
 // absolute path

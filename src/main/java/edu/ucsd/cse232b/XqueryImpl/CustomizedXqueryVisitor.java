@@ -164,7 +164,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         LinkedList<Node> res2 = visit(ctx.rp(1));
 
         for (Node node : res2) {
-            // res and res2 can have overlapping nodes
+            // res and res2.xml can have overlapping nodes
             if (!res.contains(node)) {
                 res.add(node);
             }
