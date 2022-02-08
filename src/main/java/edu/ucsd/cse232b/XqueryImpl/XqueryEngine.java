@@ -25,7 +25,7 @@ import java.util.LinkedList;
 public class XqueryEngine {
     public static void main(String[] args) {
         String XpathQuery = "testcase/XpathQuery/test7";
-        String resFilename = "testcase/XpathResult/res7";
+        String resFilename = "testcase/XpathResult/res.xml";
         LinkedList<Node> res;
         Document output;
         try {
@@ -43,7 +43,7 @@ public class XqueryEngine {
 
             write2File(output, res, resFilename);
         } catch(ParserConfigurationException | IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(); // print the stack frame status
         }
     }
 
@@ -51,15 +51,18 @@ public class XqueryEngine {
         // https://www.titanwolf.org/Network/q/4e45060a-2293-47f3-aa12-3d67d3d96f6f/y
         Node root = doc.createElement("result");
         for (Node node: res) {
-            Node cNode = doc.importNode(node, true);
+            // Do we have to create a node here?
+            Node cNode = doc.importNode(node, true); // return the deep copied node (including its children)
             root.appendChild(cNode);
         }
+        // Do we have to create a node here?
         Node cRoot = doc.importNode(root, true);
         doc.appendChild(cRoot);
 
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
+            // Does this work?
             t.setParameter(OutputKeys.INDENT, "yes");
             t.setParameter("{http://xml.apache.org/xslt}indent-amount", "4");
             t.transform(new DOMSource(doc), new StreamResult(new File(outputFilename)));

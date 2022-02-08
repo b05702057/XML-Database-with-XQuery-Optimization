@@ -87,6 +87,11 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
+    public LinkedList<Node> visitBraceRP(XqueryParser.BraceRPContext ctx) {
+        return visit(ctx.rp());
+    }
+
+    @Override
     public LinkedList<Node> visitDoubleSlashRP(XqueryParser.DoubleSlashRPContext ctx) {
         logger.info("visit double RP node");
         this.frontierNodes = visit(ctx.rp(0)); // nodes that satisfy the first RP
@@ -164,17 +169,12 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         LinkedList<Node> res2 = visit(ctx.rp(1));
 
         for (Node node : res2) {
-            // res and res2 can have overlapping nodes
+            // res and res2.xml can have overlapping nodes
             if (!res.contains(node)) {
                 res.add(node);
             }
         }
         return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitBraceRP(XqueryParser.BraceRPContext ctx) {
-        return visit(ctx.rp());
     }
 
     @Override
@@ -248,6 +248,38 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
+    public LinkedList<Node> visitNotFilter(XqueryParser.NotFilterContext ctx) {
+        logger.info("visit NotFilter");
+        LinkedList<Node> res;
+
+        HashSet<Node> current = new HashSet<>(this.frontierNodes);
+        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
+
+        current.removeAll(diff);
+        res = new LinkedList<>(current);
+
+        this.frontierNodes = res;
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitAndFilter(XqueryParser.AndFilterContext ctx) {
+        logger.info("visit AndFilter");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
+
+        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
+
+        ls.retainAll(rs);
+        res = new LinkedList<>(ls);
+
+        return res;
+    }
+
+    @Override
     public LinkedList<Node> visitIsFilter(XqueryParser.IsFilterContext ctx) {
         logger.info("visit IsFilter");
         LinkedList<Node> tmp = this.frontierNodes;
@@ -294,61 +326,6 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
-    public LinkedList<Node> visitBraceFilter(XqueryParser.BraceFilterContext ctx) {
-        logger.info("visit BraceFilter");
-        return visit(ctx.f());
-    }
-
-    @Override
-    public LinkedList<Node> visitOrFilter(XqueryParser.OrFilterContext ctx) {
-        logger.info("visit OrFilter");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
-
-        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
-
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
-
-        ls.addAll(rs);
-        res = new LinkedList<>(ls);
-
-        return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitNotFilter(XqueryParser.NotFilterContext ctx) {
-        logger.info("visit NotFilter");
-        LinkedList<Node> res;
-
-        HashSet<Node> current = new HashSet<>(this.frontierNodes);
-        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
-
-        current.removeAll(diff);
-        res = new LinkedList<>(current);
-
-        this.frontierNodes = res;
-        return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitAndFilter(XqueryParser.AndFilterContext ctx) {
-        logger.info("visit AndFilter");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
-
-        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
-
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
-
-        ls.retainAll(rs);
-        res = new LinkedList<>(ls);
-
-        return res;
-    }
-
-    @Override
     public LinkedList<Node> visitStringFilter(XqueryParser.StringFilterContext ctx) {
         logger.info("visit StringFilter");
         LinkedList<Node> res = new LinkedList<>();
@@ -376,6 +353,29 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
+    public LinkedList<Node> visitBraceFilter(XqueryParser.BraceFilterContext ctx) {
+        logger.info("visit BraceFilter");
+        return visit(ctx.f());
+    }
+
+    @Override
+    public LinkedList<Node> visitOrFilter(XqueryParser.OrFilterContext ctx) {
+        logger.info("visit OrFilter");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
+
+        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
+
+        ls.addAll(rs);
+        res = new LinkedList<>(ls);
+
+        return res;
+    }
+
+    @Override
     public LinkedList<Node> visitTagName(XqueryParser.TagNameContext ctx) {
         logger.info("visit TagName");
         LinkedList<Node> res = new LinkedList<>(); // result nodes
@@ -399,4 +399,56 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         }
         return res;
     }
+
+    @Override public LinkedList<Node> visitFLWR(XqueryParser.FLWRContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitSingleSlashXQ(XqueryParser.SingleSlashXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitTagXQ(XqueryParser.TagXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitApXQ(XqueryParser.ApXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitLetXQ(XqueryParser.LetXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitStringXQ(XqueryParser.StringXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitCommaXQ(XqueryParser.CommaXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitVarXQ(XqueryParser.VarXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitBraceXQ(XqueryParser.BraceXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitDoubleSlashXQ(XqueryParser.DoubleSlashXQContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitForClause(XqueryParser.ForClauseContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitLetClause(XqueryParser.LetClauseContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitWhereClause(XqueryParser.WhereClauseContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitReturnClause(XqueryParser.ReturnClauseContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitOrCond(XqueryParser.OrCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitBreaceCond(XqueryParser.BreaceCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitEmptyCond(XqueryParser.EmptyCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitAndCond(XqueryParser.AndCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitIsCond(XqueryParser.IsCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitEqCond(XqueryParser.EqCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitNotCond(XqueryParser.NotCondContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitFileName(XqueryParser.FileNameContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitVar(XqueryParser.VarContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitOpenTag(XqueryParser.OpenTagContext ctx) { return visitChildren(ctx); }
+
+    @Override public LinkedList<Node> visitCloseTag(XqueryParser.CloseTagContext ctx) { return visitChildren(ctx); }
 }
