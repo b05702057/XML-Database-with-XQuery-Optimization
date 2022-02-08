@@ -15,12 +15,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     private static final Logger logger = Logger.getLogger(CustomizedXqueryVisitor.class.getName());
     LinkedList<Node> frontierNodes = new LinkedList<>(); // the nodes under the current path
+    HashMap<String,Object> context = new HashMap<>();
 
     // get all children and sub children for the double slash condition
     public LinkedList<Node> getAllChildren(Node node) {
@@ -48,6 +50,25 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
             }
         }
         return visit(ctx);
+    }
+
+    public boolean visitSomeVarXq(XqueryParser.ParSatisfyCondContext ctx, int curIndex) {
+        LinkedList<Node> res;
+        // Since we only use the context at the lowest level, we don't need to remove var from the context during DFS.
+        if (ctx.var().size() == curIndex) { // no more variables
+            res = visit(ctx.cond());
+            return res.size() > 0; // if the condition is matched or not
+        }
+        String var = ctx.var(curIndex).getText() ;
+        XqueryParser.XqContext xq = ctx.xq(curIndex);
+        res = visit(xq);
+        for (Node node : res) {
+            this.context.put(var, node);
+            if (visitSomeVarXq(ctx, curIndex + 1)){ // DFS
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -275,7 +296,6 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
         ls.retainAll(rs);
         res = new LinkedList<>(ls);
-
         return res;
     }
 
@@ -422,29 +442,169 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
     @Override public LinkedList<Node> visitForClause(XqueryParser.ForClauseContext ctx) { return visitChildren(ctx); }
 
-    @Override public LinkedList<Node> visitLetClause(XqueryParser.LetClauseContext ctx) { return visitChildren(ctx); }
+    @Override public LinkedList<Node> visitLetClause(XqueryParser.LetClauseContext ctx) {
+        int varNum = ctx.var().size();
+        for (int i = 0; i < varNum; i++) {
+            this.context.put(ctx.var(i).getText(), ctx.xq(i));
+        }
+        return visit(ctx.xq(varNum));
+    }
 
     @Override public LinkedList<Node> visitWhereClause(XqueryParser.WhereClauseContext ctx) { return visitChildren(ctx); }
 
     @Override public LinkedList<Node> visitReturnClause(XqueryParser.ReturnClauseContext ctx) { return visitChildren(ctx); }
 
-    @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) { return visitChildren(ctx); }
+    @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) {
+        LinkedList<Node> res = new LinkedList<>();
+        LinkedList<Node> tmp = this.frontierNodes;
+        for (Node node : tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
 
-    @Override public LinkedList<Node> visitOrCond(XqueryParser.OrCondContext ctx) { return visitChildren(ctx); }
+            this.frontierNodes = evalNode;
+            if (visitSomeVarXq(ctx, 0)) {
+                res.add(node);
+            }
+        }
+        return res;
+    }
 
-    @Override public LinkedList<Node> visitBreaceCond(XqueryParser.BreaceCondContext ctx) { return visitChildren(ctx); }
+    @Override public LinkedList<Node> visitOrCond(XqueryParser.OrCondContext ctx) {
+        logger.info("visit OrCond");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
 
-    @Override public LinkedList<Node> visitEmptyCond(XqueryParser.EmptyCondContext ctx) { return visitChildren(ctx); }
+        HashSet<Node> ls = new HashSet<>(visit(ctx.cond(0)));
 
-    @Override public LinkedList<Node> visitAndCond(XqueryParser.AndCondContext ctx) { return visitChildren(ctx); }
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.cond(1)));
 
-    @Override public LinkedList<Node> visitIsCond(XqueryParser.IsCondContext ctx) { return visitChildren(ctx); }
+        ls.addAll(rs);
+        res = new LinkedList<>(ls);
+        return res;
+    }
 
-    @Override public LinkedList<Node> visitEqCond(XqueryParser.EqCondContext ctx) { return visitChildren(ctx); }
+    @Override public LinkedList<Node> visitBraceCond(XqueryParser.BraceCondContext ctx) {
+        logger.info("visit BraceCond");
+        return visit(ctx.cond());
+    }
 
-    @Override public LinkedList<Node> visitNotCond(XqueryParser.NotCondContext ctx) { return visitChildren(ctx); }
+    @Override public LinkedList<Node> visitEmptyCond(XqueryParser.EmptyCondContext ctx) {
+        logger.info("visit EmptyCond");
+        LinkedList<Node> res = new LinkedList<>();
+        LinkedList<Node> tmp = this.frontierNodes;
+        LinkedList<Node> condRes;
 
-    @Override public LinkedList<Node> visitFileName(XqueryParser.FileNameContext ctx) { return visitChildren(ctx); }
+        for (Node node : tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
+
+            this.frontierNodes = evalNode;
+            condRes = visit(ctx.xq());
+            if (condRes.size() == 0) {
+                res.add(node);
+            }
+        }
+        return res;
+    }
+
+    @Override public LinkedList<Node> visitAndCond(XqueryParser.AndCondContext ctx) {
+        logger.info("visit AndCond");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
+
+        HashSet<Node> ls = new HashSet<>(visit(ctx.cond(0)));
+
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.cond(1)));
+
+        ls.retainAll(rs);
+        res = new LinkedList<>(ls);
+        return res;
+    }
+
+    @Override public LinkedList<Node> visitIsCond(XqueryParser.IsCondContext ctx) {
+        logger.info("visit IsCond");
+        LinkedList<Node> tmp = this.frontierNodes;
+        LinkedList<Node> res = new LinkedList<>();
+        boolean shouldBreak = false;
+
+        for (Node node: tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
+
+            this.frontierNodes = evalNode;
+            LinkedList<Node> l = visit(ctx.xq(0));
+
+            this.frontierNodes = evalNode;
+            LinkedList<Node> r = visit(ctx.xq(1));
+
+            for (Node ln: l) {
+                if (shouldBreak) {
+                    break;
+                }
+                for (Node rn: r) {
+                    if (ln.isSameNode(rn)) {
+                        res.add(node);
+                        shouldBreak = true;
+                        break;
+                    }
+                }
+            }
+        }
+        // add this line back if necessary
+//        this.frontierNodes = res;
+        return res;
+    }
+
+    @Override public LinkedList<Node> visitEqCond(XqueryParser.EqCondContext ctx) {
+        logger.info("visit EqCond");
+        LinkedList<Node> tmp = this.frontierNodes;
+        LinkedList<Node> res = new LinkedList<>();
+        boolean shouldBreak = false;
+
+        for (Node node: tmp) {
+            LinkedList<Node> evalNode = new LinkedList<>();
+            evalNode.add(node);
+
+            this.frontierNodes = evalNode;
+            LinkedList<Node> l = visit(ctx.xq(0));
+
+            this.frontierNodes = evalNode;
+            LinkedList<Node> r = visit(ctx.xq(1));
+
+            for (Node ln: l) {
+                if (shouldBreak) {
+                    break;
+                }
+                for (Node rn: r) {
+                    if (ln.isEqualNode(rn)) {
+                        res.add(node);
+                        shouldBreak = true;
+                        break;
+                    }
+                }
+            }
+        }
+        // add this line back if necessary
+//        this.frontierNodes = res;
+        return res;
+    }
+
+    @Override public LinkedList<Node> visitNotCond(XqueryParser.NotCondContext ctx) {
+        logger.info("visit NotCond");
+        LinkedList<Node> res;
+
+        HashSet<Node> current = new HashSet<>(this.frontierNodes);
+        HashSet<Node> diff = new HashSet<>(visit(ctx.cond()));
+
+        current.removeAll(diff);
+        res = new LinkedList<>(current);
+
+        // add this line back if something goes wrong
+//        this.frontierNodes = res;
+        return res;
+    }
 
     @Override public LinkedList<Node> visitVar(XqueryParser.VarContext ctx) { return visitChildren(ctx); }
 
