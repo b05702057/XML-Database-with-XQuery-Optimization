@@ -5,40 +5,6 @@ grammar Xquery;
 package edu.ucsd.cse232b.Antlr4Xquery; // add the package name at the beginning of ANTLR generated Java files
 }
 
-// absolute path
-ap  : doc '/' rp   #singleAP
-    | doc '//' rp  #doubleAP
-    ;
-
-// doc
-doc: DOC '(' fileName ')';
-
-// relative path
-// "#..." defines the node type in the tree.
-rp  : tagName       #tagRP
-    | '*'           #childrenRP
-    | '.'           #selfRP
-    | '..'          #parentRP
-    | 'text()'      #textRP
-    | '@' attName   #attRP
-    | '(' rp ')'    #braceRP
-    | rp '/' rp     #singleSlashRP
-    | rp '//' rp    #doubleSlashRP
-    | rp '[' f ']'  #filterRP
-    | rp ',' rp     #commaRP
-    ;
-
-// path filter
-f   : rp            #rpFilter
-    | rp EQ rp      #eqFilter
-    | rp IS rp      #isFilter
-    | rp '=' STRING #stringFilter
-    | '(' f ')'     #braceFilter
-    | f 'and' f     #andFilter
-    | f 'or' f      #orFilter
-    | 'not' f       #notFilter
-    ;
-
 xq  : var                                               #varXQ
     | STRING                                            #stringXQ
     | ap                                                #apXQ
@@ -66,6 +32,43 @@ cond : xq EQ xq                                                 #eqCond
      | 'not' cond                                               #notCond
      ;
 
+// absolute path
+ap  : doc '/' rp   #singleAP
+    | doc '//' rp  #doubleAP
+    ;
+
+// doc
+doc: DOC '(' fileName ')';
+
+// relative path
+// "#..." defines the node type in the tree.
+rp  : tagName       #tagRP
+    | '*'           #childrenRP
+    | '.'           #selfRP
+    | '..'          #parentRP
+    | 'text()'      #textRP
+    | '@' attName   #attRP
+    | '(' rp ')'    #braceRP
+    | rp '/' rp     #singleSlashRP
+    | rp '//' rp    #doubleSlashRP
+    | rp '[' f ']'  #filterRP
+    | rp ',' rp     #commaRP
+    ;
+
+// path filter
+f   : rp            #rpFilter
+    | rp EQ rp      #eqFilter
+    | rp IS rp      #isFilter
+    | rp STRINGEQ STRING #stringFilter
+    | '(' f ')'     #braceFilter
+    | f 'and' f     #andFilter
+    | f 'or' f      #orFilter
+    | 'not' f       #notFilter
+    ;
+
+var: '$' ID ;
+openTag: '<' tagName '>' ;
+closeTag: '</' tagName '>' ;
 
  tagName: ID;
  attName: ID;
@@ -74,9 +77,10 @@ cond : xq EQ xq                                                 #eqCond
 // A lexer and a parser work in sequence.
 // The lexer scans the input and produces the matching tokens, the parser then scans the tokens and produces the parsing result.
 // We can also use only parsers and produce same rules.
-DOC: [dD][oO][cC];
+DOC: [dD][oO][cC] | 'document';
 
  EQ: '=' | 'eq';
+ STRINGEQ: '=';
  IS: '==' | 'is';
  ID: [_a-zA-Z][a-zA-Z_0-9]*;
 
@@ -102,7 +106,3 @@ DOC: [dD][oO][cC];
     )
  ;
  WHITESPACE:[ \t\n\r]+ -> skip;
-
-var: '$' ID ;
-openTag: '<' tagName '>' ;
-closeTag: '</' tagName '>' ;
