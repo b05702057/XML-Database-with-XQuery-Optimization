@@ -91,6 +91,11 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
+    public LinkedList<Node> visitBraceRP(XqueryParser.BraceRPContext ctx) {
+        return visit(ctx.rp());
+    }
+
+    @Override
     public LinkedList<Node> visitDoubleSlashRP(XqueryParser.DoubleSlashRPContext ctx) {
         logger.info("visit double RP node");
         this.frontierNodes = visit(ctx.rp(0)); // nodes that satisfy the first RP
@@ -168,17 +173,12 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         LinkedList<Node> res2 = visit(ctx.rp(1));
 
         for (Node node : res2) {
-            // res and res2 can have overlapping nodes
+            // res and res2.xml can have overlapping nodes
             if (!res.contains(node)) {
                 res.add(node);
             }
         }
         return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitBraceRP(XqueryParser.BraceRPContext ctx) {
-        return visit(ctx.rp());
     }
 
     @Override
@@ -252,6 +252,38 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
+    public LinkedList<Node> visitNotFilter(XqueryParser.NotFilterContext ctx) {
+        logger.info("visit NotFilter");
+        LinkedList<Node> res;
+
+        HashSet<Node> current = new HashSet<>(this.frontierNodes);
+        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
+
+        current.removeAll(diff);
+        res = new LinkedList<>(current);
+
+        this.frontierNodes = res;
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitAndFilter(XqueryParser.AndFilterContext ctx) {
+        logger.info("visit AndFilter");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
+
+        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
+
+        ls.retainAll(rs);
+        res = new LinkedList<>(ls);
+
+        return res;
+    }
+
+    @Override
     public LinkedList<Node> visitIsFilter(XqueryParser.IsFilterContext ctx) {
         logger.info("visit IsFilter");
         LinkedList<Node> tmp = this.frontierNodes;
@@ -298,61 +330,6 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     }
 
     @Override
-    public LinkedList<Node> visitBraceFilter(XqueryParser.BraceFilterContext ctx) {
-        logger.info("visit BraceFilter");
-        return visit(ctx.f());
-    }
-
-    @Override
-    public LinkedList<Node> visitOrFilter(XqueryParser.OrFilterContext ctx) {
-        logger.info("visit OrFilter");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
-
-        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
-
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
-
-        ls.addAll(rs);
-        res = new LinkedList<>(ls);
-
-        return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitNotFilter(XqueryParser.NotFilterContext ctx) {
-        logger.info("visit NotFilter");
-        LinkedList<Node> res;
-
-        HashSet<Node> current = new HashSet<>(this.frontierNodes);
-        HashSet<Node> diff = new HashSet<>(visit(ctx.f()));
-
-        current.removeAll(diff);
-        res = new LinkedList<>(current);
-
-        this.frontierNodes = res;
-        return res;
-    }
-
-    @Override
-    public LinkedList<Node> visitAndFilter(XqueryParser.AndFilterContext ctx) {
-        logger.info("visit AndFilter");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
-
-        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
-
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
-
-        ls.retainAll(rs);
-        res = new LinkedList<>(ls);
-
-        return res;
-    }
-
-    @Override
     public LinkedList<Node> visitStringFilter(XqueryParser.StringFilterContext ctx) {
         logger.info("visit StringFilter");
         LinkedList<Node> res = new LinkedList<>();
@@ -376,6 +353,29 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         }
 
         this.frontierNodes = res;
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitBraceFilter(XqueryParser.BraceFilterContext ctx) {
+        logger.info("visit BraceFilter");
+        return visit(ctx.f());
+    }
+
+    @Override
+    public LinkedList<Node> visitOrFilter(XqueryParser.OrFilterContext ctx) {
+        logger.info("visit OrFilter");
+        LinkedList<Node> res;
+        LinkedList<Node> tmp = this.frontierNodes;
+
+        HashSet<Node> ls = new HashSet<>(visit(ctx.f(0)));
+
+        this.frontierNodes = tmp;
+        HashSet<Node> rs = new HashSet<>(visit(ctx.f(1)));
+
+        ls.addAll(rs);
+        res = new LinkedList<>(ls);
+
         return res;
     }
 
