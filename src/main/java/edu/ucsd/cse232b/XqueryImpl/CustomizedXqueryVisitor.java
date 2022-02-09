@@ -14,13 +14,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     private static final Logger logger = Logger.getLogger(CustomizedXqueryVisitor.class.getName());
     LinkedList<Node> frontierNodes = new LinkedList<>(); // the nodes under the current path
+    private Document doc = null;
+    private HashMap<String, LinkedList<Node>> contextMap = new HashMap<>();
 
     // get all children and sub children for the double slash condition
     public LinkedList<Node> getAllChildren(Node node) {
@@ -398,5 +402,136 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
             }
         }
         return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitBraceXQ(XqueryParser.BraceXQContext ctx) {
+        logger.info("visit BraceXQ");
+        return visit(ctx.xq());
+    }
+
+    @Override
+    public LinkedList<Node> visitCommaXQ(XqueryParser.CommaXQContext ctx) {
+        logger.info("visit CommaXQ");
+        LinkedList<Node> res = visit(ctx.xq(0));
+        res.addAll(visit(ctx.xq(1)));
+
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitStringXQ(XqueryParser.StringXQContext ctx) {
+        logger.info("visit StringXQ");
+        String str = ctx.STRING().getText();
+        str = str.substring(1, str.length() - 1);
+
+        LinkedList<Node> res = new LinkedList<Node>();
+        res.add(this.doc.createTextNode(str));
+
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitApXQ(XqueryParser.ApXQContext ctx) {
+        logger.info("visit ApXQ");
+        return visit(ctx.ap());
+    }
+
+    @Override
+    public LinkedList<Node> visitSingleSlashXQ(XqueryParser.SingleSlashXQContext ctx) {
+        logger.info("visit singleSlashRP XQ");
+        LinkedList<Node> res = new LinkedList<>();
+
+        this.frontierNodes = visit(ctx.xq());
+        res.addAll(visit(ctx.rp()));
+
+        return res;
+    }
+
+    @Override
+    public LinkedList<Node> visitDoubleSlashXQ(XqueryParser.DoubleSlashXQContext ctx) {
+        logger.info("visit doubleSlashRp XQ");
+        this.frontierNodes = visit(ctx.xq());
+
+        return visitDoubleSlash(ctx.rp());
+    }
+
+    @Override
+    public LinkedList<Node> visitTagXQ(XqueryParser.TagXQContext ctx) {
+        logger.info("visit TagXQ");
+        String tag = ctx.openTag().tagName().getText();
+        LinkedList<Node> res = new LinkedList<>();
+        LinkedList<Node> nodeList = visit(ctx.xq());
+
+        Node node = makeElem(tag, nodeList);
+        res.add(node);
+
+        return res;
+    }
+
+    private Node makeElem(String tag, LinkedList<Node> nodeList) {
+        Node newNode = doc.createElement(tag);
+        for (Node node: nodeList) {
+            newNode.appendChild(doc.importNode(node, true));
+        }
+
+        return newNode;
+    }
+
+    @Override
+    public LinkedList<Node> visitVarXQ(XqueryParser.VarXQContext ctx) {
+        logger.info("visit VarXQ");
+        return this.contextMap.get(ctx.var().ID().getText());
+    }
+
+    @Override
+    public LinkedList<Node> visitFLWR(XqueryParser.FLWRContext ctx) {
+        logger.info("visit FLWR");
+        LinkedList<Node> res = new LinkedList<>();
+        HashMap<String, LinkedList<Node>> currContext = new HashMap<>(contextMap);
+        Stack<HashMap<String, LinkedList<Node>>> ctxStack = new Stack<>();
+
+        ctxStack.push(currContext);
+        traverse(ctx, ctxStack, 0, ctx.forClause().var().size(), res);
+        contextMap = ctxStack.pop();
+
+        return res;
+    }
+
+    private void traverse(XqueryParser.FLWRContext ctx, Stack<HashMap<String, LinkedList<Node>>> ctxStack,
+                                      int layer, int maxLayer, LinkedList<Node> res) {
+        if (layer == maxLayer) {
+            logger.info("final layer, output the result with let, where, and return");
+            if (ctx.letClause() != null) visit(ctx.letClause());
+            if (ctx.whereClause() != null) visit(ctx.whereClause());
+            res.addAll(visit(ctx.returnClause()));
+            return;
+        }
+
+        logger.info("advance to the next level of context, currentContext = ");
+        System.out.println(contextMap);
+        String key = ctx.forClause().var(layer).getText();
+        LinkedList<Node> nodeList = visit(ctx.forClause().xq(layer));
+
+        HashMap<String, LinkedList<Node>> next = new HashMap<>(contextMap);
+        LinkedList<Node> val = new LinkedList<>();
+        val.addAll(nodeList);
+        next.put(key, val);
+
+        ctxStack.push(next);
+        contextMap = ctxStack.peek();
+        traverse(ctx, ctxStack, layer+1, maxLayer, res);
+        ctxStack.pop();
+        contextMap = ctxStack.peek();
+    }
+
+    @Override
+    public LinkedList<Node> visitWhereClause(XqueryParser.WhereClauseContext ctx) {
+        return visit(ctx.cond());
+    }
+
+    @Override
+    public LinkedList<Node> visitReturnClause(XqueryParser.ReturnClauseContext ctx) {
+        return visit(ctx.xq());
     }
 }
