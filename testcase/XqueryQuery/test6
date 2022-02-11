@@ -1,1 +1,6 @@
-doc("simple.xml")//FM
+<result>{
+  for $a in doc("j_caesar.xml")//PERSONAE, $b in $a/PERSONA
+  where not (($b/text() = "JULIUS CAESAR") or ($b/text() = "Another Poet") )
+  return $b
+}
+</result>

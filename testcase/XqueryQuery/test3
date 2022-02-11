@@ -1,1 +1,10 @@
-doc("j_caesar.xml")//ACT[SCENE [SPEECH/SPEAKER/text() = "CAESAR" and SPEECH/SPEAKER/text() = "BRUTUS"]]
+<acts>
+ {	for $a in doc("j_caesar.xml")//ACT
+where empty ( for $sp in $a/SCENE/SPEECH/SPEAKER
+      where $sp/text() = "CASCA"
+      return <speaker> {$sp/text()}</speaker>)
+
+return <act>{$a/TITLE/text()}</act>
+
+        }
+</acts>
