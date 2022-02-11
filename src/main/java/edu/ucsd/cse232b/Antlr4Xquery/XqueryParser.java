@@ -698,6 +698,17 @@ public class XqueryParser extends Parser {
 			else return visitor.visitChildren(this);
 		}
 	}
+	public static class BraceCondContext extends CondContext {
+		public CondContext cond() {
+			return getRuleContext(CondContext.class,0);
+		}
+		public BraceCondContext(CondContext ctx) { copyFrom(ctx); }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof XqueryVisitor ) return ((XqueryVisitor<? extends T>)visitor).visitBraceCond(this);
+			else return visitor.visitChildren(this);
+		}
+	}
 	public static class OrCondContext extends CondContext {
 		public List<CondContext> cond() {
 			return getRuleContexts(CondContext.class);
@@ -709,17 +720,6 @@ public class XqueryParser extends Parser {
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
 			if ( visitor instanceof XqueryVisitor ) return ((XqueryVisitor<? extends T>)visitor).visitOrCond(this);
-			else return visitor.visitChildren(this);
-		}
-	}
-	public static class BreaceCondContext extends CondContext {
-		public CondContext cond() {
-			return getRuleContext(CondContext.class,0);
-		}
-		public BreaceCondContext(CondContext ctx) { copyFrom(ctx); }
-		@Override
-		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof XqueryVisitor ) return ((XqueryVisitor<? extends T>)visitor).visitBreaceCond(this);
 			else return visitor.visitChildren(this);
 		}
 	}
@@ -892,7 +892,7 @@ public class XqueryParser extends Parser {
 				break;
 			case 5:
 				{
-				_localctx = new BreaceCondContext(_localctx);
+				_localctx = new BraceCondContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(139);

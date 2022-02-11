@@ -26,7 +26,7 @@ cond : xq EQ xq                                                 #eqCond
      | xq IS xq                                                 #isCond
      | 'empty' '(' xq ')'                                       #emptyCond
      | 'some' var 'in' xq (',' var 'in' xq)* 'satisfies' cond   #parSatisfyCond
-     | '(' cond ')'                                             #breaceCond
+     | '(' cond ')'                                             #braceCond
      | cond 'and' cond                                          #andCond
      | cond 'or' cond                                           #orCond
      | 'not' cond                                               #notCond

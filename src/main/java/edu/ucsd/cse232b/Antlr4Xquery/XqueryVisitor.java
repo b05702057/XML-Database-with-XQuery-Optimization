@@ -115,19 +115,19 @@ public interface XqueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code braceCond}
+	 * labeled alternative in {@link XqueryParser#cond}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBraceCond(XqueryParser.BraceCondContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code orCond}
 	 * labeled alternative in {@link XqueryParser#cond}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitOrCond(XqueryParser.OrCondContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code breaceCond}
-	 * labeled alternative in {@link XqueryParser#cond}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBreaceCond(XqueryParser.BreaceCondContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code emptyCond}
 	 * labeled alternative in {@link XqueryParser#cond}.
