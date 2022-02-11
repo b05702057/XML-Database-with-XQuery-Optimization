@@ -33,7 +33,7 @@ public class XqueryEngine {
             CharStream cs = CharStreams.fromFileName(XpathQuery);
             XqueryLexer lexer= new XqueryLexer(cs);
             XqueryParser parser = new XqueryParser((new CommonTokenStream((lexer))));
-            ParseTree tree = parser.ap();
+            ParseTree tree = parser.xq();
 
             CustomizedXqueryVisitor visitor = new CustomizedXqueryVisitor();
             res = visitor.visit(tree);
