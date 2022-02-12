@@ -24,8 +24,8 @@ import java.util.LinkedList;
 
 public class XqueryEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XpathQuery/test7";
-        String resFilename = "testcase/XpathResult/res.xml";
+        String XpathQuery = "testcase/XqueryQuery/test3";
+        String resFilename = "testcase/XqueryResult/res.xml";
         LinkedList<Node> res;
         Document output;
         try {
@@ -37,12 +37,10 @@ public class XqueryEngine {
 
             CustomizedXqueryVisitor visitor = new CustomizedXqueryVisitor();
             res = visitor.visit(tree);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            output = db.newDocument();
+            output = visitor.doc;
 
             write2File(output, res, resFilename);
-        } catch(ParserConfigurationException | IOException e) {
+        } catch(IOException e) {
             e.printStackTrace(); // print the stack frame status
         }
     }
@@ -62,9 +60,8 @@ public class XqueryEngine {
         try {
             TransformerFactory tf = TransformerFactory.newInstance();
             Transformer t = tf.newTransformer();
-            // Does this work?
-            t.setParameter(OutputKeys.INDENT, "yes");
-            t.setParameter("{http://xml.apache.org/xslt}indent-amount", "4");
+            t.setOutputProperty(OutputKeys.INDENT, "yes");
+            t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
             t.transform(new DOMSource(doc), new StreamResult(new File(outputFilename)));
         } catch (TransformerException e) {
             e.printStackTrace();
