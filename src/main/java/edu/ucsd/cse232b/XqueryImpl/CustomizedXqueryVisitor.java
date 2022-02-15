@@ -496,7 +496,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         return res;
     }
 
-    public LinkedList<Node> visitSomeVarXq(XqueryParser.ParSatisfyCondContext ctx, int curIndex) {
+    public LinkedList<Node> visitSomeVarXq(XqueryParser.ParSatisfyCondContext ctx, int curIndex, HashMap<String, LinkedList<Node>> curMap) {
         LinkedList<Node> res;
         LinkedList<Node> finalRes;
         LinkedList<Node> empty = new LinkedList<>();
@@ -508,18 +508,22 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         XqueryParser.XqContext xq = ctx.xq(curIndex);
         res = visit(xq);
         for (Node node : res) {
+            HashMap<String, LinkedList<Node>> next = new HashMap<>(curMap);
             LinkedList<Node> curNodeList = new LinkedList<>();
             curNodeList.add(node);
+            next.put(var, curNodeList);
 
-            this.contextMap.put(var, curNodeList);
-            finalRes = visitSomeVarXq(ctx, curIndex + 1);
+            // We don't really use this map in the process, but we still want to keep it updated.
+            contextMap = next;
+            finalRes = visitSomeVarXq(ctx, curIndex + 1, next);
+            contextMap = curMap;
             if (finalRes.size() > 0) return finalRes;
         }
         return empty;
     }
 
     @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) {
-        return visitSomeVarXq(ctx, 0);
+        return visitSomeVarXq(ctx, 0, contextMap);
     }
 
     @Override public LinkedList<Node> visitOrCond(XqueryParser.OrCondContext ctx) {
@@ -671,7 +675,6 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
             val.add(node);
             next.put(key, val);
 
-            // Why not just use the original map?
             ctxStack.push(next);
             contextMap = ctxStack.peek();
             traverse(ctx, ctxStack, layer + 1, maxLayer, res);
