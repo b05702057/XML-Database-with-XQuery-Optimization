@@ -24,8 +24,8 @@ import java.util.LinkedList;
 
 public class XqueryEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XqueryQuery/test3";
-        String resFilename = "testcase/XqueryResult/res.xml";
+        String XpathQuery = "testcase/XqueryQuery/test6";
+        String resFilename = "testcase/XqueryResult/res6.xml";
         LinkedList<Node> res;
         Document output;
         try {

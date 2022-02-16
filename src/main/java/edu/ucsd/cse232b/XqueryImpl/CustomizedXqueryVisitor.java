@@ -8,7 +8,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.sound.sampled.Line;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -64,25 +63,6 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         }
         logger.info("visitDoubleSlash2: " + contextMap);
         return visit(ctx);
-    }
-
-    public boolean visitSomeVarXq(XqueryParser.ParSatisfyCondContext ctx, int curIndex) {
-        LinkedList<Node> res;
-        // Since we only use the context at the lowest level, we don't need to remove var from the context during DFS.
-        if (ctx.var().size() == curIndex) { // no more variables
-            res = visit(ctx.cond());
-            return res.size() > 0; // if the condition is matched or not
-        }
-        String var = ctx.var(curIndex).getText() ;
-        XqueryParser.XqContext xq = ctx.xq(curIndex);
-        res = visit(xq);
-//        for (Node node : res) {
-//            this.contextMap.put(var, node);
-//            if (visitSomeVarXq(ctx, curIndex + 1)){ // DFS
-//                return true;
-//            }
-//        }
-        return false;
     }
 
     @Override
@@ -156,9 +136,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     public LinkedList<Node> visitAttRP(XqueryParser.AttRPContext ctx) {
         logger.info("visit attribute RP node");
         LinkedList<Node> res = new LinkedList<>();
-        String attName;
         NamedNodeMap attributes;
-        Node attribute;
         for (Node node : this.frontierNodes) {
             attributes = node.getAttributes(); // get all attributes of a node
             for (int i = 0; i < attributes.getLength(); i++) {
@@ -453,7 +431,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     public LinkedList<Node> visitStringXQ(XqueryParser.StringXQContext ctx) {
         logger.info("visit StringXQ: " + ctx.STRING().getText());
         String str = ctx.STRING().getText();
-        str = str.substring(1, str.length() - 1);
+        str = str.substring(1, str.length() - 1); // remove the left parenthesis and the right parenthesis
 
         LinkedList<Node> res = new LinkedList<Node>();
         res.add(this.doc.createTextNode(str));
@@ -472,6 +450,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         logger.info("visit singleSlashRP XQ");
         LinkedList<Node> res = new LinkedList<>();
 
+        // Why do we copy the nodes here?
         this.frontierNodes = copyNodes(visit(ctx.xq()));
         res.addAll(visit(ctx.rp()));
 
@@ -484,12 +463,14 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         for (int i = 0; i < varNum; i++) {
             this.contextMap.put(ctx.var(i).getText(), visit(ctx.xq(i)));
         }
-        return visit(ctx.xq(varNum));
+        return visit(ctx.xq(varNum)); // the last XQ
     }
 
     @Override
     public LinkedList<Node> visitDoubleSlashXQ(XqueryParser.DoubleSlashXQContext ctx) {
         logger.info("visit doubleSlashRp XQ");
+
+        // Why do we copy the nodes here?
         this.frontierNodes = copyNodes(visit(ctx.xq()));
         return visitDoubleSlash(ctx.rp());
     }
@@ -515,34 +496,47 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         return res;
     }
 
-    @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) {
-        LinkedList<Node> res = new LinkedList<>();
-        LinkedList<Node> tmp = this.frontierNodes;
-        for (Node node : tmp) {
-            LinkedList<Node> evalNode = new LinkedList<>();
-            evalNode.add(node);
+    public LinkedList<Node> visitSomeVarXq(XqueryParser.ParSatisfyCondContext ctx, int curIndex, HashMap<String, LinkedList<Node>> curMap) {
+        LinkedList<Node> res;
+        LinkedList<Node> finalRes;
+        LinkedList<Node> empty = new LinkedList<>();
 
-            this.frontierNodes = evalNode;
-            if (visitSomeVarXq(ctx, 0)) {
-                res.add(node);
-            }
+        if (ctx.var().size() == curIndex) { // no more variables
+            return visit(ctx.cond());
         }
-        return res;
+        String var = ctx.var(curIndex).getText() ;
+        XqueryParser.XqContext xq = ctx.xq(curIndex);
+        res = visit(xq);
+        for (Node node : res) {
+            HashMap<String, LinkedList<Node>> next = new HashMap<>(curMap);
+            LinkedList<Node> curNodeList = new LinkedList<>();
+            curNodeList.add(node);
+            next.put(var, curNodeList);
+
+            // We don't really use this map in the process, but we still want to keep it updated.
+            contextMap = next;
+            finalRes = visitSomeVarXq(ctx, curIndex + 1, next);
+            contextMap = curMap;
+            if (finalRes.size() > 0) return finalRes;
+        }
+        return empty;
+    }
+
+    @Override public LinkedList<Node> visitParSatisfyCond(XqueryParser.ParSatisfyCondContext ctx) {
+        return visitSomeVarXq(ctx, 0, contextMap);
     }
 
     @Override public LinkedList<Node> visitOrCond(XqueryParser.OrCondContext ctx) {
         logger.info("visit OrCond");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
+        LinkedList<Node> res1;
+        LinkedList<Node> res2;
 
-        HashSet<Node> ls = new HashSet<>(visit(ctx.cond(0)));
+        res1 = visit(ctx.cond(0));
+        res2 = visit(ctx.cond(1));
 
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.cond(1)));
-
-        ls.addAll(rs);
-        res = new LinkedList<>(ls);
-        return res;
+        if (res1.size() > 0) return res1;
+        if (res2.size() > 0) return res2;
+        return res1; // return empty
     }
 
     @Override public LinkedList<Node> visitBraceCond(XqueryParser.BraceCondContext ctx) {
@@ -553,118 +547,78 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     @Override public LinkedList<Node> visitEmptyCond(XqueryParser.EmptyCondContext ctx) {
         logger.info("visit EmptyCond");
         LinkedList<Node> res = new LinkedList<>();
-        LinkedList<Node> tmp = this.frontierNodes;
-        LinkedList<Node> condRes;
+        LinkedList<Node> empty = new LinkedList<>();
+        Node oneNode = doc.createTextNode("random");
+        LinkedList<Node> oneNodeList = new LinkedList<>();
+        oneNodeList.add(oneNode);
 
-        for (Node node : tmp) {
-            LinkedList<Node> evalNode = new LinkedList<>();
-            evalNode.add(node);
-
-            this.frontierNodes = evalNode;
-            condRes = visit(ctx.xq());
-            if (condRes.size() == 0) {
-                res.add(node);
-            }
-        }
-        return res;
+        res = visit(ctx.xq());
+        if (res.size() == 0) return oneNodeList;
+        return  empty;
     }
 
     @Override public LinkedList<Node> visitAndCond(XqueryParser.AndCondContext ctx) {
         logger.info("visit AndCond");
-        LinkedList<Node> res;
-        LinkedList<Node> tmp = this.frontierNodes;
+        LinkedList<Node> res1;
+        LinkedList<Node> res2;
 
-        HashSet<Node> ls = new HashSet<>(visit(ctx.cond(0)));
+        LinkedList<Node> empty = new LinkedList<>();
+        Node oneNode = doc.createTextNode("random");
+        LinkedList<Node> oneNodeList = new LinkedList<>();
+        oneNodeList.add(oneNode);
 
-        this.frontierNodes = tmp;
-        HashSet<Node> rs = new HashSet<>(visit(ctx.cond(1)));
+        res1 = visit(ctx.cond(0));
+        res2 = visit(ctx.cond(1));
 
-        ls.retainAll(rs);
-        res = new LinkedList<>(ls);
-        return res;
+        if (res1.size() > 0 && res2.size() > 0) return oneNodeList;
+        return empty;
     }
 
     @Override public LinkedList<Node> visitIsCond(XqueryParser.IsCondContext ctx) {
         logger.info("visit IsCond");
-        LinkedList<Node> tmp = this.frontierNodes;
         LinkedList<Node> res = new LinkedList<>();
-        boolean shouldBreak = false;
+        LinkedList<Node> l = visit(ctx.xq(0));
+        LinkedList<Node> r = visit(ctx.xq(1));
 
-        for (Node node: tmp) {
-            LinkedList<Node> evalNode = new LinkedList<>();
-            evalNode.add(node);
-
-            this.frontierNodes = evalNode;
-            LinkedList<Node> l = visit(ctx.xq(0));
-
-            this.frontierNodes = evalNode;
-            LinkedList<Node> r = visit(ctx.xq(1));
-
-            for (Node ln: l) {
-                if (shouldBreak) {
-                    break;
-                }
-                for (Node rn: r) {
-                    if (ln.isSameNode(rn)) {
-                        res.add(node);
-                        shouldBreak = true;
-                        break;
-                    }
+        for (Node ln: l) {
+            for (Node rn: r) {
+                if (ln.isSameNode(rn)) {
+                    res.add(ln); // only store one node
+                    return res;
                 }
             }
         }
-        // add this line back if necessary
-//        this.frontierNodes = res;
-        return res;
+        return res; // empty
     }
 
     @Override public LinkedList<Node> visitEqCond(XqueryParser.EqCondContext ctx) {
         logger.info("visit EqCond");
-        LinkedList<Node> tmp = this.frontierNodes;
         LinkedList<Node> res = new LinkedList<>();
-        boolean shouldBreak = false;
+        LinkedList<Node> l = visit(ctx.xq(0));
+        LinkedList<Node> r = visit(ctx.xq(1));
 
-        for (Node node: tmp) {
-            LinkedList<Node> evalNode = new LinkedList<>();
-            evalNode.add(node);
-
-            this.frontierNodes = evalNode;
-            LinkedList<Node> l = visit(ctx.xq(0));
-
-            this.frontierNodes = evalNode;
-            LinkedList<Node> r = visit(ctx.xq(1));
-
-            for (Node ln: l) {
-                if (shouldBreak) {
-                    break;
-                }
-                for (Node rn: r) {
-                    if (ln.isEqualNode(rn)) {
-                        res.add(node);
-                        shouldBreak = true;
-                        break;
-                    }
+        for (Node ln: l) {
+            for (Node rn: r) {
+                if (ln.isEqualNode(rn)) {
+                    res.add(ln);
+                    return res;
                 }
             }
         }
-        // add this line back if necessary
-//        this.frontierNodes = res;
-        return res;
+        return res; // empty
     }
 
     @Override public LinkedList<Node> visitNotCond(XqueryParser.NotCondContext ctx) {
         logger.info("visit NotCond");
         LinkedList<Node> res;
+        LinkedList<Node> empty = new LinkedList<>();
+        Node oneNode = doc.createTextNode("random");
+        LinkedList<Node> oneNodeList = new LinkedList<>();
+        oneNodeList.add(oneNode);
 
-        HashSet<Node> current = new HashSet<>(this.frontierNodes);
-        HashSet<Node> diff = new HashSet<>(visit(ctx.cond()));
-
-        current.removeAll(diff);
-        res = new LinkedList<>(current);
-
-        // add this line back if something goes wrong
-//        this.frontierNodes = res;
-        return res;
+        res = visit(ctx.cond());
+        if (res.size() > 0) return empty;
+        return oneNodeList;
     }
 
     private Node makeElem(String tag, LinkedList<Node> nodeList) {
