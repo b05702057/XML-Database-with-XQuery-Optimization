@@ -57,9 +57,9 @@ rp  : tagName       #tagRP
 
 // path filter
 f   : rp            #rpFilter
+    | rp EQ STRING #stringFilter
     | rp EQ rp      #eqFilter
     | rp IS rp      #isFilter
-    | rp STRINGEQ STRING #stringFilter
     | '(' f ')'     #braceFilter
     | f 'and' f     #andFilter
     | f 'or' f      #orFilter

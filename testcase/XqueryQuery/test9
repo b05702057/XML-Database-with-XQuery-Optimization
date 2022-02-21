@@ -1,0 +1,7 @@
+<acts> {
+let $a:= doc("j_caesar.xml")//ACT
+for $b in $a/SCENE
+where $b/SPEECH/SPEAKER/text()="MARULLUS"
+return <act>{$b}</act>
+}
+</acts>
