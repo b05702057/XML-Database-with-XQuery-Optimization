@@ -1485,7 +1485,7 @@ public class XqueryParser extends Parser {
 		public RpContext rp() {
 			return getRuleContext(RpContext.class,0);
 		}
-		public TerminalNode STRINGEQ() { return getToken(XqueryParser.STRINGEQ, 0); }
+		public TerminalNode EQ() { return getToken(XqueryParser.EQ, 0); }
 		public TerminalNode STRING() { return getToken(XqueryParser.STRING, 0); }
 		public StringFilterContext(FContext ctx) { copyFrom(ctx); }
 		@Override
@@ -1550,7 +1550,7 @@ public class XqueryParser extends Parser {
 				break;
 			case 2:
 				{
-				_localctx = new EqFilterContext(_localctx);
+				_localctx = new StringFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(208);
@@ -1558,33 +1558,33 @@ public class XqueryParser extends Parser {
 				setState(209);
 				match(EQ);
 				setState(210);
-				rp(0);
+				match(STRING);
 				}
 				break;
 			case 3:
 				{
-				_localctx = new IsFilterContext(_localctx);
+				_localctx = new EqFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(212);
 				rp(0);
 				setState(213);
-				match(IS);
+				match(EQ);
 				setState(214);
 				rp(0);
 				}
 				break;
 			case 4:
 				{
-				_localctx = new StringFilterContext(_localctx);
+				_localctx = new IsFilterContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
 				setState(216);
 				rp(0);
 				setState(217);
-				match(STRINGEQ);
+				match(IS);
 				setState(218);
-				match(STRING);
+				rp(0);
 				}
 				break;
 			case 5:
@@ -2011,10 +2011,10 @@ public class XqueryParser extends Parser {
 		"\3\2\2\2\u00cb\u00c6\3\2\2\2\u00cc\u00cf\3\2\2\2\u00cd\u00cb\3\2\2\2\u00cd"+
 		"\u00ce\3\2\2\2\u00ce\23\3\2\2\2\u00cf\u00cd\3\2\2\2\u00d0\u00d1\b\13\1"+
 		"\2\u00d1\u00e5\5\22\n\2\u00d2\u00d3\5\22\n\2\u00d3\u00d4\7\"\2\2\u00d4"+
-		"\u00d5\5\22\n\2\u00d5\u00e5\3\2\2\2\u00d6\u00d7\5\22\n\2\u00d7\u00d8\7"+
-		"$\2\2\u00d8\u00d9\5\22\n\2\u00d9\u00e5\3\2\2\2\u00da\u00db\5\22\n\2\u00db"+
-		"\u00dc\7#\2\2\u00dc\u00dd\7&\2\2\u00dd\u00e5\3\2\2\2\u00de\u00df\7\3\2"+
-		"\2\u00df\u00e0\5\24\13\2\u00e0\u00e1\7\4\2\2\u00e1\u00e5\3\2\2\2\u00e2"+
+		"\u00d5\7&\2\2\u00d5\u00e5\3\2\2\2\u00d6\u00d7\5\22\n\2\u00d7\u00d8\7\""+
+		"\2\2\u00d8\u00d9\5\22\n\2\u00d9\u00e5\3\2\2\2\u00da\u00db\5\22\n\2\u00db"+
+		"\u00dc\7$\2\2\u00dc\u00dd\5\22\n\2\u00dd\u00e5\3\2\2\2\u00de\u00df\7\3"+
+		"\2\2\u00df\u00e0\5\24\13\2\u00e0\u00e1\7\4\2\2\u00e1\u00e5\3\2\2\2\u00e2"+
 		"\u00e3\7\25\2\2\u00e3\u00e5\5\24\13\3\u00e4\u00d0\3\2\2\2\u00e4\u00d2"+
 		"\3\2\2\2\u00e4\u00d6\3\2\2\2\u00e4\u00da\3\2\2\2\u00e4\u00de\3\2\2\2\u00e4"+
 		"\u00e2\3\2\2\2\u00e5\u00ee\3\2\2\2\u00e6\u00e7\f\5\2\2\u00e7\u00e8\7\23"+
