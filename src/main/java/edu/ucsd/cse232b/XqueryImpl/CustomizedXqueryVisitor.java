@@ -459,11 +459,12 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
 
     @Override public LinkedList<Node> visitLetClause(XqueryParser.LetClauseContext ctx) {
+        LinkedList<Node> empty = new LinkedList<>();
         int varNum = ctx.var().size();
         for (int i = 0; i < varNum; i++) {
             this.contextMap.put(ctx.var(i).getText(), visit(ctx.xq(i)));
         }
-        return visit(ctx.xq(varNum)); // the last XQ
+        return empty;
     }
 
     @Override
