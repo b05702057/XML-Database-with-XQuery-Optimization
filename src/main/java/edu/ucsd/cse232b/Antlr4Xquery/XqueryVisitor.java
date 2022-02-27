@@ -77,6 +77,13 @@ public interface XqueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBraceXQ(XqueryParser.BraceXQContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code joinXQ}
+	 * labeled alternative in {@link XqueryParser#xq}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinXQ(XqueryParser.JoinXQContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code doubleSlashXQ}
 	 * labeled alternative in {@link XqueryParser#xq}.
 	 * @param ctx the parse tree
@@ -107,6 +114,12 @@ public interface XqueryVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitReturnClause(XqueryParser.ReturnClauseContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XqueryParser#joinClause}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitJoinClause(XqueryParser.JoinClauseContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code parSatisfyCond}
 	 * labeled alternative in {@link XqueryParser#cond}.
@@ -352,4 +365,10 @@ public interface XqueryVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFileName(XqueryParser.FileNameContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link XqueryParser#idList}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIdList(XqueryParser.IdListContext ctx);
 }
