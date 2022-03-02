@@ -70,22 +70,23 @@ var: '$' ID ;
 openTag: '<' tagName '>' ;
 closeTag: '</' tagName '>' ;
 
- tagName: ID;
- attName: ID;
- fileName: STRING;
+tagName: ID;
+attName: ID;
+fileName: STRING;
 
 // A lexer and a parser work in sequence.
 // The lexer scans the input and produces the matching tokens, the parser then scans the tokens and produces the parsing result.
 // We can also use only parsers and produce same rules.
 DOC: [dD][oO][cC] | 'document';
 
- EQ: '=' | 'eq';
- STRINGEQ: '=';
- IS: '==' | 'is';
- ID: [_a-zA-Z][a-zA-Z_0-9]*;
+EQ: '=' | 'eq';
+STRINGEQ: '=';
+IS: '==' | 'is';
+ID: [_a-zA-Z][a-zA-Z_0-9-]*;
+ABC: [123-]*;
 
 //string: STRING;
- STRING:
+STRING:
     '"'
     (
        ESCAPE
@@ -96,13 +97,13 @@ DOC: [dD][oO][cC] | 'document';
        ESCAPE
        | ~['\\]
     )* '\''
- ;
+;
 
 //escape :ESCAPE;
- ESCAPE:
+ESCAPE:
     '\\'
     (
        ['"\\]
     )
- ;
- WHITESPACE:[ \t\n\r]+ -> skip;
+;
+WHITESPACE:[ \t\n\r]+ -> skip;
