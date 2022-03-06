@@ -15,12 +15,14 @@ xq  : var                                               #varXQ
     | openTag '{' xq '}' closeTag                       #tagXQ
     | forClause letClause? whereClause? returnClause    #FLWR
     | letClause xq                                      #letXQ
+    | joinClause                                        #joinXQ
     ;
 
 forClause: 'for' var 'in' xq (',' var 'in' xq)* ;
 letClause: 'let' var ':=' xq (',' var ':=' xq)* ;
 whereClause: 'where' cond ;
 returnClause: 'return' xq ;
+joinClause: 'join' '(' xq ',' xq ',' idList ',' idList ')';
 
 cond : xq EQ xq                                                 #eqCond
      | xq IS xq                                                 #isCond
@@ -83,6 +85,7 @@ DOC: [dD][oO][cC] | 'document';
  STRINGEQ: '=';
  IS: '==' | 'is';
  ID: [_a-zA-Z][a-zA-Z_0-9]*;
+ idList: '[' ID (',' ID)* ']';
 
 //string: STRING;
  STRING:
