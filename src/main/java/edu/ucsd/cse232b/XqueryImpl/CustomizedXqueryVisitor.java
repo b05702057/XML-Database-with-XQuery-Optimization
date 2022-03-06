@@ -13,10 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Stack;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
@@ -633,7 +630,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
     @Override
     public LinkedList<Node> visitVarXQ(XqueryParser.VarXQContext ctx) {
-        logger.info("visit VarXQ: " + ctx.var().getText());
+        logger.info("visit VarXQ: " + ctx.var().getText() );
         return this.contextMap.get(ctx.var().getText());
     }
 
@@ -641,6 +638,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     public LinkedList<Node> visitFLWR(XqueryParser.FLWRContext ctx) {
         logger.info("visit FLWR");
         LinkedList<Node> res = new LinkedList<>();
+
         HashMap<String, LinkedList<Node>> currContext = new HashMap<>(contextMap);
         Stack<HashMap<String, LinkedList<Node>>> ctxStack = new Stack<>();
 
@@ -783,3 +781,5 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         return result;
     }
 }
+
+

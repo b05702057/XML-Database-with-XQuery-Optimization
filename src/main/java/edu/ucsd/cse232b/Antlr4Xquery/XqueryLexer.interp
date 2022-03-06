@@ -39,6 +39,7 @@ null
 null
 null
 null
+null
 
 token symbolic names:
 null
@@ -78,6 +79,7 @@ EQ
 STRINGEQ
 IS
 ID
+ABC
 STRING
 ESCAPE
 WHITESPACE
@@ -119,6 +121,7 @@ EQ
 STRINGEQ
 IS
 ID
+ABC
 STRING
 ESCAPE
 WHITESPACE

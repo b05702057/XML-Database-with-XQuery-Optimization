@@ -1,0 +1,18 @@
+<result>{
+    for $persona in doc("j_caesar.xml")//PERSONA
+    where empty (
+        for $pgroup in doc("j_caesar.xml")//PGROUP,
+            $persona2 in $pgroup/PERSONA
+        where $persona2/text()=$persona/text()
+        return $persona2
+    ) and not empty (
+        for $act in doc("j_caesar.xml")//ACT,
+            $scene in $act/SCENE,
+            $speaker in $scene//SPEAKER
+        where $act/TITLE/text()="ACT III"
+            and $scene/TITLE/text()="SCENE II.  The Forum."
+            and $speaker/text()=$persona/text()
+        return $speaker
+    )
+    return $persona
+}</result>
