@@ -664,9 +664,9 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         }
 
         String key = ctx.forClause().var(layer).getText();
-        System.out.println("before " + key + " is made with " + ctx.forClause().xq(layer).getText() + ": " + contextMap);
+        //System.out.println("before " + key + " is made with " + ctx.forClause().xq(layer).getText() + ": " + contextMap);
         LinkedList<Node> nodeList = visit(ctx.forClause().xq(layer));
-        System.out.println("end of evaluation: " + nodeList + ". At this moment, contextMap=" + contextMap);
+        //System.out.println("end of evaluation: " + nodeList + ". At this moment, contextMap=" + contextMap);
 
         for (Node node: nodeList) {
             HashMap<String, LinkedList<Node>> next = new HashMap<>(contextMap);
@@ -692,6 +692,93 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     public LinkedList<Node> visitReturnClause(XqueryParser.ReturnClauseContext ctx) {
         logger.info("visit return clause");
         return visit(ctx.xq());
+    }
+
+    @Override
+    public LinkedList<Node> visitJoinXQ(XqueryParser.JoinXQContext ctx) {
+        return visitChildren(ctx);
+    }
+
+    @Override
+    public LinkedList<Node> visitJoinClause(XqueryParser.JoinClauseContext ctx) {
+        LinkedList<Node> lTable = visit(ctx.xq(0));
+        LinkedList<Node> rTable = visit(ctx.xq(1));
+
+        int attrLen = ctx.idList(0).ID().size();
+        String [] lAttrList = new String[attrLen];
+        String [] rAttrList = new String[attrLen];
+
+        for (int i = 0; i < attrLen; ++i) {
+            lAttrList[i] = ctx.idList(0).ID(i).getText();
+            rAttrList[i] = ctx.idList(1).ID(i).getText();
+        }
+
+        HashMap<String, LinkedList<Node>> lHashTable = constructHashTable(lTable, lAttrList);
+        LinkedList<Node> result = performJoin(lAttrList, rAttrList, lHashTable, rTable);
+
+        return result;
+    }
+
+    private HashMap<String, LinkedList<Node>> constructHashTable(LinkedList<Node> table, String [] attrList) {
+        HashMap<String, LinkedList<Node>> hashTable = new HashMap<String, LinkedList<Node>>();
+        for (Node tuple: table) {
+            LinkedList<Node> cols = getColumns(tuple);
+            String key = "";
+            for (Node col: cols)
+                for (String attr: attrList)
+                    if (attr.equals(col.getNodeName())) key += col.getChildNodes().item(0).getTextContent();
+
+            if (hashTable.containsKey(key)) {
+                hashTable.get(key).add(tuple);
+            } else {
+                LinkedList<Node> value = new LinkedList<>();
+                value.add(tuple);
+                hashTable.put(key, value);
+            }
+        }
+
+        return hashTable;
+    }
+
+    private LinkedList<Node> getColumns(Node tuple) {
+        LinkedList<Node> cols = new LinkedList<>();
+        for (int i = 0; i < tuple.getChildNodes().getLength(); ++i)
+            cols.add(tuple.getChildNodes().item(i));
+
+        return cols;
+    }
+
+    private LinkedList<Node> performJoin(String [] lAttrList, String [] rAttrList,
+                                         HashMap<String, LinkedList<Node>> lHashTable, LinkedList<Node> rTable) {
+        // hashing join algorithm
+        LinkedList<Node> result = new LinkedList<>();
+        for (Node tuple: rTable) {
+            LinkedList<Node> cols = getColumns(tuple);
+            String key = "";
+
+            for (Node col: cols)
+                for (String attr: rAttrList)
+                    if (attr.equals(col.getNodeName())) key += col.getChildNodes().item(0).getTextContent();
+
+            if (lHashTable.containsKey(key)) {
+                result.addAll(cProduct(lHashTable.get(key), tuple));
+            }
+        }
+
+        return result;
+    }
+
+    private LinkedList<Node> cProduct(LinkedList<Node> l, Node r) {
+        LinkedList<Node> result = new LinkedList<>();
+
+        for (Node lNode: l) {
+            LinkedList<Node> cols = getColumns(lNode);
+            LinkedList<Node> rcols = getColumns(r);
+            cols.addAll(rcols);
+
+            result.add(makeElem("tuple", cols));
+        }
+        return result;
     }
 }
 

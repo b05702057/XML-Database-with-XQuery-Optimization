@@ -21,11 +21,13 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.logging.LogManager;
 
 public class XqueryEngine {
     public static void main(String[] args) {
-        String XpathQuery = "testcase/XqueryQuery/test1";
-        String resFilename = "testcase/XqueryResult/res.xml";
+        LogManager.getLogManager().reset(); // comment this for debugging
+        String XpathQuery = "testcase/XqueryQuery/test6"; //args[0];
+        String resFilename = "testcase/XqueryResult/res6.xml"; //"result.xml";
         LinkedList<Node> res;
         Document output;
         try {
