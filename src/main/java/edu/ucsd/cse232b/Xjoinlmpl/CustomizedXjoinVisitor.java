@@ -137,6 +137,7 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
                     blockString += curVar + " in " + ctx.forClause().xq(curIndex).getText() + ", ";
                 }
             }
+            blockString = blockString.substring(0, blockString.length() - 2); // strip ", "
             finalForGroup.put(curGroup, blockString);
         }
 
@@ -156,11 +157,12 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         for (Map.Entry<Integer, LinkedList<String>> set : groupVar.entrySet()) {
             int curGroup = set.getKey();
             String blockString = finalForGroup.get(curGroup);
-            blockString += "     return <tuple> ";
+            blockString += "     return <tuple>{ ";
             for (String curVar : set.getValue()){
                 blockString += String.format("<%s>{%s}</%s>, ", curVar.substring(1), curVar, curVar.substring(1));
             }
-            blockString += "</tuple>, ";
+            blockString = blockString.substring(0, blockString.length() - 2); // strip ", "
+            blockString += " }</tuple>, ";
             finalForGroup.put(curGroup, blockString);
         }
 
