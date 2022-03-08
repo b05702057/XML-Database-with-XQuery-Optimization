@@ -130,14 +130,15 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         // prepare the for blocks
         for (Map.Entry<Integer, LinkedList<String>> set : groupVar.entrySet()) {
             int curGroup = set.getKey();
-            String blockString = "for " + ctx.forClause().var(curGroup).getText() + " in " + ctx.forClause().xq(curGroup).getText() + ", ";
+            String blockString = "for " + ctx.forClause().var(curGroup).getText() + " in " + ctx.forClause().xq(curGroup).getText() + ",\n";
             for (String curVar : set.getValue()) {
                 int curIndex =  varIndex.get(curVar);
                 if (curGroup != curIndex) { // not the first index of the group
-                    blockString += curVar + " in " + ctx.forClause().xq(curIndex).getText() + ", ";
+                    blockString += curVar + " in " + ctx.forClause().xq(curIndex).getText() + ",\n";
                 }
             }
             blockString = blockString.substring(0, blockString.length() - 2); // strip ", "
+            blockString += "\n";
             finalForGroup.put(curGroup, blockString);
         }
 
@@ -145,11 +146,12 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         for (Map.Entry<Integer, LinkedList<String[]>> set : groupConst.entrySet()) {
             int curGroup = set.getKey();
             String blockString = finalForGroup.get(curGroup);
-            blockString += "     where ";
+            blockString += "where ";
             for (String[] eqCond : set.getValue()) {
                 blockString += eqCond[0] + " eq " + eqCond[1] + " and ";
             }
             blockString = blockString.substring(0, blockString.length() - 5); // strip the and part
+            blockString += "\n";
             finalForGroup.put(curGroup, blockString);
         }
 
@@ -157,12 +159,12 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         for (Map.Entry<Integer, LinkedList<String>> set : groupVar.entrySet()) {
             int curGroup = set.getKey();
             String blockString = finalForGroup.get(curGroup);
-            blockString += "     return <tuple>{ ";
+            blockString += "return <tuple>{ ";
             for (String curVar : set.getValue()){
                 blockString += String.format("<%s>{%s}</%s>, ", curVar.substring(1), curVar, curVar.substring(1));
             }
             blockString = blockString.substring(0, blockString.length() - 2); // strip ", "
-            blockString += " }</tuple>, ";
+            blockString += " }</tuple>,\n";
             finalForGroup.put(curGroup, blockString);
         }
 
@@ -175,7 +177,7 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         }
 
         for (String key : groupsCond.keySet()) {
-            String finalString = "join (";
+            String finalString = "join (\n\n";
             int group1 = Integer.valueOf(key.split(",")[0]);
             int group2 = Integer.valueOf(key.split(",")[1]);
             String groupString1 = "";
@@ -212,7 +214,7 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
             list1 = list1.substring(0, list1.length() - 1) + "], ";
             list2 = list2.substring(0, list2.length() - 1) + "]";
             finalString += list1 + list2;
-            finalString += "),";
+            finalString += "),\n";
             finalResult.put(newList, finalString);
         }
 
@@ -225,7 +227,7 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
             String groupString1 = finalResult.remove(key1);
             String groupString2 = finalResult.remove(key2);
 
-            String finalString = "join (" + groupString1 + "\n" + groupString2 + "\n" + "[], []),";
+            String finalString = "join (\n" + groupString1 + "\n" + groupString2 + "\n" + "[], []),\n";
 
             key1.addAll(key2);
             keyList.add(key1);
@@ -235,7 +237,8 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         // get the final query
         String finalQuery = "for $tuple in ";
         String finalString = finalResult.values().toString();
-        finalString = finalString.substring(1, finalString.length() - 2);
+        System.out.println(finalString);
+        finalString = finalString.substring(1, finalString.length() - 3); // get rid of the brackets, the last comma and the last \n
         finalQuery += finalString + "\n";
 
         // return clause
@@ -253,15 +256,6 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         }
         returnString = returnString.replace("$", "$tuple/");
         finalQuery += returnString;
-
-//            System.out.println(varGroup);
-//            System.out.println(groupVar);
-//            System.out.println(varIndex);
-//            System.out.println(finalForGroup);
-//            System.out.println(groupConst);
-//            System.out.println(groupsCond);
-//            System.out.println(finalResult);
-//        System.out.println(finalQuery);
 
         return finalQuery;
     }

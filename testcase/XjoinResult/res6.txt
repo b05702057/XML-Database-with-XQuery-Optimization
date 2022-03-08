@@ -22,7 +22,7 @@ $aj in $b1/author/first/text(),
 $al1 in $a1/last,
 $a1 in $b1/author,
 $af1 in $a1/first
-where $aj eq "John"
+where $aj eq "John" and $b1 eq "book1"
 return <tuple>{ <aj>{$aj}</aj>, <b1>{$b1}</b1>, <al1>{$al1}</al1>, <a1>{$a1}</a1>, <af1>{$af1}</af1> }</tuple>,
 
 [], [])

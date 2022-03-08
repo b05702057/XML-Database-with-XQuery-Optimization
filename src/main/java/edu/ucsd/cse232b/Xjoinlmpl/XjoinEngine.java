@@ -15,9 +15,9 @@ import java.nio.file.Paths;
 
 public class XjoinEngine {
     public static void main(String[] args) {
-        String XjoinQuery = "testcase/XjoinQuery/test5";
+        String XjoinQuery = "testcase/XjoinQuery/test6";
         Path inputPath = Paths.get(XjoinQuery);
-        Path outputPath = Paths.get("testcase/XjoinResult/res5.txt");
+        Path outputPath = Paths.get("testcase/XjoinResult/res6.txt");
         String output;
         try {
             // https://stackoverflow.com/questions/50541321/antlrinputstream-and-antlrfilestream-are-deprecated-what-are-the-alternatives
