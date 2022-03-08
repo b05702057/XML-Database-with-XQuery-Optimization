@@ -3,13 +3,6 @@ package edu.ucsd.cse232b.Xjoinlmpl;
 import edu.ucsd.cse232b.Antlr4Xjoin.XjoinBaseVisitor;
 import edu.ucsd.cse232b.Antlr4Xjoin.XjoinParser;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -60,6 +53,8 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         String[] eqCondition; // store the split condition
         for (int i = 0; i < conditions.length; i++) {
             String curCond = conditions[i];
+            System.out.println(curCond);
+
             // We have to split with "eq$" or "eq\"" because "eq" can be a variable name.
             if (curCond.contains("eq$")) {
                 eqCondition = curCond.split("eq\\$");
