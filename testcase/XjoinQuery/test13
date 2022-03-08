@@ -1,0 +1,14 @@
+for $b in doc("j_caesar.xml")//PERSONAE,
+    $a in doc("j_caesar.xml")//PERSONAE,
+    $c in doc("j_caesar.xml")//PERSONAE,
+    $tb in $b/PERSONA,
+    $ta in $a/PERSONA,
+    $tc in $a/PERSONA
+where $ta eq $tb and $tb eq $tc and $tc eq "A Soothsayer"
+return
+    <result>{
+        <title>{$b/TITLE}</title>,
+        <name1>{$tb/text()}</name1>,
+        <name2>{$ta/text()}</name2>,
+        <name3>{$tc/text()}</name3>
+    }</result>
