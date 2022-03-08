@@ -475,7 +475,8 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
     private LinkedList<Node> copyNodes(LinkedList<Node> from) {
         LinkedList<Node> to = new LinkedList<>();
-        for (Node node: from) to.add(node);
+        if (from == null) return to;
+        for (Node node: from) if (node != null) to.add(node);
 
         return to;
     }
@@ -724,8 +725,8 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
         for (Node tuple: table) {
             LinkedList<Node> cols = getColumns(tuple);
             String key = "";
-            for (Node col: cols)
-                for (String attr: attrList)
+            for (String attr: attrList)
+                for (Node col: cols)
                     if (attr.equals(col.getNodeName())) key += col.getChildNodes().item(0).getTextContent();
 
             if (hashTable.containsKey(key)) {
@@ -756,8 +757,8 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
             LinkedList<Node> cols = getColumns(tuple);
             String key = "";
 
-            for (Node col: cols)
-                for (String attr: rAttrList)
+            for (String attr: rAttrList)
+                for (Node col: cols)
                     if (attr.equals(col.getNodeName())) key += col.getChildNodes().item(0).getTextContent();
 
             if (lHashTable.containsKey(key)) {

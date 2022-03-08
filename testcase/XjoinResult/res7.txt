@@ -1,15 +1,33 @@
 for $tuple in join (
 
-for $act in doc("j_caesar.xml")//ACT,
-$speaker2 in $act//SPEAKER/text(),
-$speaker1 in $act//SPEAKER/text(),
-$title in $act/SCENE/TITLE
-return <tuple>{ <speaker2>{$speaker2}</speaker2>, <speaker1>{$speaker1}</speaker1>, <title>{$title}</title>, <act>{$act}</act> }</tuple>,
+join (
 
-for $pg in doc("j_caesar.xml")//PGROUP,
-$persona1 in $pg/PERSONA/text(),
-$persona2 in $pg/PERSONA/text()
-return <tuple>{ <persona1>{$persona1}</persona1>, <persona2>{$persona2}</persona2>, <pg>{$pg}</pg> }</tuple>,
+for $b in document("j_caesar_M3.xml")//ACT,
+$sb in $b//SCENE,
+$spb in $sb//SPEAKER/text()
+where $spb eq "FLAVIUS"
+return <tuple>{ <b>{$b}</b>, <sb>{$sb}</sb>, <spb>{$spb}</spb> }</tuple>,
 
-[speaker1,speaker2], [persona1,persona2])
-return<tuple>{<scene>{$tuple/title/*/text()}</scene>,<persona1>{$tuple/persona1/*}</persona1>,<persona2>{$tuple/persona2/*}</persona2>}</tuple>
+join (
+
+for $a in document("j_caesar_M3.xml")//ACT,
+$sa in $a//SCENE,
+$spa in $sa//SPEAKER
+return <tuple>{ <a>{$a}</a>, <sa>{$sa}</sa>, <spa>{$spa}</spa> }</tuple>,
+
+for $c in document("j_caesar_M3.xml")//ACT,
+$sc in $c//SCENE,
+$spc in $sc//SPEAKER
+return <tuple>{ <c>{$c}</c>, <sc>{$sc}</sc>, <spc>{$spc}</spc> }</tuple>,
+
+[spa], [spc]),
+
+[sb], [sc]),
+
+for $d in document("j_caesar_M3.xml")//ACT,
+$sd in $d//SCENE,
+$spd in $sd//SPEAKER
+return <tuple>{ <d>{$d}</d>, <sd>{$sd}</sd>, <spd>{$spd}</spd> }</tuple>,
+
+[sa], [sd])
+return<result>{<title>{$tuple/sa/*/TITLE/text()}</title>}</result>

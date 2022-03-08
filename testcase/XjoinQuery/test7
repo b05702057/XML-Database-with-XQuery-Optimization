@@ -1,16 +1,14 @@
-for $act in doc("j_caesar.xml")//ACT,
-    $title in $act/SCENE/TITLE,
-    $speaker1 in $act//SPEAKER/text(),
-    $speaker2 in $act//SPEAKER/text(),
-    $pg in doc("j_caesar.xml")//PGROUP,
-    $persona1 in $pg/PERSONA/text(),
-    $persona2 in $pg/PERSONA/text()
-
-where $speaker1 eq $persona1 and $speaker2 eq $persona2
-
-return
-    <tuple>{
-        <scene>{$title/text()}</scene>,
-        <persona1>{$persona1}</persona1>,
-        <persona2>{$persona2}</persona2>
-    }</tuple>
+for $a in document("j_caesar_M3.xml")//ACT,
+    $b in document("j_caesar_M3.xml")//ACT,
+    $c in document("j_caesar_M3.xml")//ACT,
+    $d in document("j_caesar_M3.xml")//ACT,
+    $sa in $a//SCENE,
+    $sb in $b//SCENE,
+    $sc in $c//SCENE,
+    $sd in $d//SCENE,
+    $spa in $sa//SPEAKER,
+    $spb in $sb//SPEAKER/text(),
+    $spc in $sc//SPEAKER,
+    $spd in $sd//SPEAKER
+where $spb eq "FLAVIUS" and $sb eq $sc and $sa eq $sd and $spa eq $spc
+return <result>{ <title>{$sa/TITLE/text()}</title> }</result>

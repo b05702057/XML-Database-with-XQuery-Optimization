@@ -1,11 +1,11 @@
 for $tuple in join (
 
-for $a in document("j_caesar_M3.xml")//ACT,
+for $a in document("j_caesar.xml")//ACT,
 $sa in $a//SCENE,
 $spa in $sa//SPEAKER
 return <tuple>{ <a>{$a}</a>, <sa>{$sa}</sa>, <spa>{$spa}</spa> }</tuple>,
 
-for $b in document("j_caesar_M3.xml")//ACT,
+for $b in document("j_caesar.xml")//ACT,
 $sb in $b//SCENE,
 $spb in $sb//SPEAKER/text(),
 $spc in $sb//SPEAKER

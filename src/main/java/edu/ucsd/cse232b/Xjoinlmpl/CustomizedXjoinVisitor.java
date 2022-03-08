@@ -34,12 +34,13 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         }
 
         HashMap<Integer, LinkedList<String>> groupVar = new HashMap<>(); // store the variables of a given group
-        for (Map.Entry<String, Integer> set : varGroup.entrySet()) {
-            String key = set.getKey(); // variable
-            Integer val = set.getValue(); // group
+        for (int i = 0; i < varNum; i ++) {
+            String key = ctx.forClause().var(i).getText();
+            Integer val = varGroup.get(key);
+
             if (!groupVar.containsKey(val)) { // new group
                 LinkedList<String> newList = new LinkedList<>();
-                groupVar.put(set.getValue(), newList); // create a new group
+                groupVar.put(val, newList); // create a new group
             }
             groupVar.get(val).add(key); // add a variable to the group
         }
@@ -53,7 +54,6 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         String[] eqCondition; // store the split condition
         for (int i = 0; i < conditions.length; i++) {
             String curCond = conditions[i];
-            System.out.println(curCond);
 
             // We have to split with "eq$" or "eq\"" because "eq" can be a variable name.
             if (curCond.contains("eq$")) {
@@ -111,6 +111,12 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
                     groupConst.get(group1).add(eqCondition);
                 }
                 else {
+                    if (group1 > group2) {
+                        int temp = group1;
+                        group1 = group2;
+                        group2 = temp;
+                    }
+
                     String key = group1 + "," + group2 ;
                     if (!groupsCond.containsKey(key)){
                         LinkedList<String[]> val = new LinkedList<>();
@@ -232,7 +238,6 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         // get the final query
         String finalQuery = "for $tuple in ";
         String finalString = finalResult.values().toString();
-        System.out.println(finalString);
         finalString = finalString.substring(1, finalString.length() - 3); // get rid of the brackets, the last comma and the last \n
         finalQuery += finalString + "\n";
 

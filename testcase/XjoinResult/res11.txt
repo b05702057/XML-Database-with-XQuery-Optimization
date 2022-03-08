@@ -1,12 +1,12 @@
 for $tuple in join (
 
-for $act in doc("j_caesar_M3.xml")//ACT,
+for $act in doc("j_caesar.xml")//ACT,
 $title in $act/SCENE/TITLE,
 $speaker1 in $act//SPEAKER/text(),
 $speaker2 in $act//SPEAKER/text()
 return <tuple>{ <act>{$act}</act>, <title>{$title}</title>, <speaker1>{$speaker1}</speaker1>, <speaker2>{$speaker2}</speaker2> }</tuple>,
 
-for $pg in doc("j_caesar_M3.xml")//PGROUP,
+for $pg in doc("j_caesar.xml")//PGROUP,
 $persona1 in $pg/PERSONA/text(),
 $persona2 in $pg/PERSONA/text()
 return <tuple>{ <pg>{$pg}</pg>, <persona1>{$persona1}</persona1>, <persona2>{$persona2}</persona2> }</tuple>,

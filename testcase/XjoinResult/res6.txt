@@ -1,29 +1,31 @@
 for $tuple in join (
-join (
-for $b3 in doc("input")/book,
-$al3 in $a3/last,
-$a3 in $b3/author,
-$af3 in $a3/first
-return <tuple>{ <b3>{$b3}</b3>, <al3>{$al3}</al3>, <a3>{$a3}</a3>, <af3>{$af3}</af3> }</tuple>,
 
-for $b2 in doc("input")/book,
-$af21 in $a21/first,
-$af22 in $a22/first,
-$al22 in $a22/last,
-$al21 in $a21/last,
-$a22 in $b2/author,
-$a21 in $b2/author
-return <tuple>{ <af21>{$af21}</af21>, <af22>{$af22}</af22>, <al22>{$al22}</al22>, <al21>{$al21}</al21>, <a22>{$a22}</a22>, <a21>{$a21}</a21>, <b2>{$b2}</b2> }</tuple>,
-
-[], []),
-
-for $b1 in doc("input")/book,
+for $b1 in doc("book.xml")//book,
 $aj in $b1/author/first/text(),
-$al1 in $a1/last,
 $a1 in $b1/author,
-$af1 in $a1/first
-where $aj eq "John" and $b1 eq "book1"
-return <tuple>{ <aj>{$aj}</aj>, <b1>{$b1}</b1>, <al1>{$al1}</al1>, <a1>{$a1}</a1>, <af1>{$af1}</af1> }</tuple>,
+$af1 in $a1/first/text(),
+$al1 in $a1/last/text()
+where $aj eq "W."
+return <tuple>{ <b1>{$b1}</b1>, <aj>{$aj}</aj>, <a1>{$a1}</a1>, <af1>{$af1}</af1>, <al1>{$al1}</al1> }</tuple>,
 
-[], [])
+join (
+
+for $b2 in doc("book.xml")//book,
+$a21 in $b2/author,
+$af21 in $a21/first/text(),
+$al21 in $a21/last/text(),
+$a22 in $b2/author,
+$af22 in $a22/first/text(),
+$al22 in $a22/last/text()
+return <tuple>{ <b2>{$b2}</b2>, <a21>{$a21}</a21>, <af21>{$af21}</af21>, <al21>{$al21}</al21>, <a22>{$a22}</a22>, <af22>{$af22}</af22>, <al22>{$al22}</al22> }</tuple>,
+
+for $b3 in doc("book.xml")//book,
+$a3 in $b3/author,
+$af3 in $a3/first/text(),
+$al3 in $a3/last/text()
+return <tuple>{ <b3>{$b3}</b3>, <a3>{$a3}</a3>, <af3>{$af3}</af3>, <al3>{$al3}</al3> }</tuple>,
+
+[af22,al22], [af3,al3]),
+
+[af1,al1], [af21,al21])
 return<triplet>{$tuple/b1/*,$tuple/b2/*,$tuple/b3/*}</triplet>
