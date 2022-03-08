@@ -10,5 +10,5 @@ for $a in document("j_caesar_M3.xml")//ACT,
     $spb in $sb//SPEAKER/text(),
     $spc in $sc//SPEAKER,
     $spd in $sd//SPEAKER
-where $spb="FLAVIUS" and $sb eq $sc and $sa eq $sd and $spa eq $spc
+where $spb eq "FLAVIUS" and $sb eq $sc and $sa eq $sd and $spa eq $spc
 return <result>{ <title>{$sa/TITLE/text()}</title> }</result>

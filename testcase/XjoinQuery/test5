@@ -1,4 +1,4 @@
 for $s in doc("j_caesar_M3.xml")//SPEAKER, $a in doc("j_caesar_M3.xml")//ACT,
     $sp in $a//SPEAKER, $stxt in $s/text()
-where $sp eq $s and $stxt = "CAESAR"
+where $sp eq $s and $stxt eq "CAESAR"
 return <act> { $a/TITLE/text()} </act>

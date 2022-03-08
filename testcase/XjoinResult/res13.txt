@@ -1,0 +1,20 @@
+for $tuple in join (
+for $c in doc("j_caesar.xml")//PERSONAE
+return <tuple>{ <c>{$c}</c> }</tuple>,
+
+join (
+
+for $b in doc("j_caesar.xml")//PERSONAE,
+$tb in $b/PERSONA
+return <tuple>{ <b>{$b}</b>, <tb>{$tb}</tb> }</tuple>,
+
+for $a in doc("j_caesar.xml")//PERSONAE,
+$ta in $a/PERSONA,
+$tc in $a/PERSONA
+where $tc eq "A Soothsayer"
+return <tuple>{ <a>{$a}</a>, <ta>{$ta}</ta>, <tc>{$tc}</tc> }</tuple>,
+
+[ta,tb], [tb,tc]),
+
+[], [])
+return<result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>,<name3>{$tuple/tc/*/text()}</name3>}</result>

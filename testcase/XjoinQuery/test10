@@ -10,7 +10,7 @@ $sp4 in $sc4//SPEAKER/text(),
 $sp2 in $sc2//SPEAKER/text(),
 $sp1 in $sc1//SPEAKER/text(),
 $sp3 in $sc3//SPEAKER/text()
-where $sp1 = "FLAVIUS" and $sp1 eq $sp2 and $sp2 eq $sp3 and $sp3 eq
+where $sp1 eq "FLAVIUS" and $sp1 eq $sp2 and $sp2 eq $sp3 and $sp3 eq
 $sp4 and $sc1 eq $sc2 and $sc2 eq $sc3 and $sc3 eq $sc4
 return <result> {
 <speaker>{$sp1}</speaker>,
