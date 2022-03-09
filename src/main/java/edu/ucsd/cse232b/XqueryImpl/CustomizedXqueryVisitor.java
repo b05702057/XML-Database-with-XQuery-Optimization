@@ -631,7 +631,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
     @Override
     public LinkedList<Node> visitVarXQ(XqueryParser.VarXQContext ctx) {
         logger.info("visit VarXQ: " + ctx.var().getText() );
-        return this.contextMap.get(ctx.var().getText());
+        return copyNodes(this.contextMap.get(ctx.var().getText()));
     }
 
     @Override
@@ -752,6 +752,9 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
                                          HashMap<String, LinkedList<Node>> lHashTable, LinkedList<Node> rTable) {
         // hashing join algorithm
         LinkedList<Node> result = new LinkedList<>();
+        int i = 1;
+        int j = 0;
+        int sum = 0;
         for (Node tuple: rTable) {
             LinkedList<Node> cols = getColumns(tuple);
             String key = "";
@@ -761,6 +764,8 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
                     if (attr.equals(col.getNodeName())) key += col.getChildNodes().item(0).getTextContent();
 
             if (lHashTable.containsKey(key)) {
+
+                sum += lHashTable.get(key).size();
                 result.addAll(cProduct(lHashTable.get(key), tuple));
             }
         }
