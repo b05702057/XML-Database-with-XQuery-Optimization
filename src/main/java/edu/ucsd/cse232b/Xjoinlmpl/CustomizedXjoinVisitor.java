@@ -55,12 +55,13 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
         for (int i = 0; i < conditions.length; i++) {
             String curCond = conditions[i];
 
-            // We have to split with "eq$" or "eq\"" because "eq" can be a variable name.
-            if (curCond.contains("eq$")) {
+            // We have to split with "=", "eq$", or "eq\"" because "eq" can be a variable name.
+            if (curCond.contains("=")) {
+                eqCondition = curCond.split("=");
+            } else if (curCond.contains("eq$")) {
                 eqCondition = curCond.split("eq\\$");
                 eqCondition[1] = "$" + eqCondition[1];
-            }
-            else {
+            } else {
                 eqCondition = curCond.split("eq\"");
                 eqCondition[1] = "\"" + eqCondition[1];
             }
