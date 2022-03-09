@@ -26,8 +26,8 @@ import java.util.logging.LogManager;
 public class XqueryEngine {
     public static void main(String[] args) {
         LogManager.getLogManager().reset(); // comment this for debugging
-        String XpathQuery = "testcase/XjoinResult/test6"; //args[0];
-        String resFilename = "testcase/XqueryResult/res-join6R.xml"; //"result.xml";
+        String XpathQuery = "testcase/XjoinResult/test15"; //args[0];
+        String resFilename = "testcase/XqueryResult/res-join15R.xml"; //"result.xml";
         LinkedList<Node> res;
         Document output;
         try {

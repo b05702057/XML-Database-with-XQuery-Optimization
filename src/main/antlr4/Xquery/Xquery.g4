@@ -85,7 +85,7 @@ EQ: '=' | 'eq';
 STRINGEQ: '=';
 IS: '==' | 'is';
 ID: [_a-zA-Z][a-zA-Z_0-9-]*;
-idList: '[' ID (',' ID)* ']';
+idList: '[' ID (',' ID)* ']' | '[' ']';
 
 //string: STRING;
 STRING:

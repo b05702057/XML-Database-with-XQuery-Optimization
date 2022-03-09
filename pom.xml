@@ -38,8 +38,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <sourceDirectory>${basedir}/src/main/antlr4/Xjoin</sourceDirectory>
-                    <outputDirectory>${basedir}/src/main/java/edu/ucsd/cse232b/Antlr4Xjoin</outputDirectory>
+                    <sourceDirectory>${basedir}/src/main/antlr4/Xquery</sourceDirectory>
+                    <outputDirectory>${basedir}/src/main/java/edu/ucsd/cse232b/Antlr4Xquery</outputDirectory>
                     <visitor>true</visitor>
                     <listener>false</listener>
                 </configuration>

@@ -1,0 +1,11 @@
+for $b in doc("j_caesar.xml")//PGROUP,
+    $a in doc("j_caesar.xml")/SPEECH,
+    $tb in $b/PERSONA,
+    $ta in $a/SPEAKER
+where $tb eq $ta
+return
+    <grpdescr-with-line>
+       { $tb,
+         <grpdescr>{ $b/GRPDESCR }</grpdescr>,
+         <line>{ $a/LINE }</line> }
+    </grpdescr-with-line>
