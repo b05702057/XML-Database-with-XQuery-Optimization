@@ -9,5 +9,5 @@ for $a in doc("j_caesar_M3.xml")//ACT,
 $sp in $a//SPEAKER
 return <tuple>{ <a>{$a}</a>, <sp>{$sp}</sp> }</tuple>,
 
-[sp], [s])
+[s], [sp])
 return<act>{$tuple/a/*/TITLE/text()}</act>

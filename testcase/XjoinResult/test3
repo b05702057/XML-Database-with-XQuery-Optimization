@@ -18,5 +18,5 @@ $sped in $sb//SPEECH
 where $spd eq "FLAVIUS"
 return <tuple>{ <q2>{$q2}</q2>, <sb>{$sb}</sb>, <spc>{$spc}</spc>, <spd>{$spd}</spd>, <speb>{$speb}</speb>, <sped>{$sped}</sped> }</tuple>,
 
-[sa,spa,spea,spec], [sb,spc,sped,speb])
-return<result>{<title>{$tuple/sa//TITLE/text()}</title>,<speaker>{$tuple/spa//*}</speaker>}</result>
+[sa,spa,spec,spea], [sb,spc,speb,sped])
+return<result>{<title>{$tuple/sa/*/TITLE/text()}</title>,<speaker>{$tuple/spa/*/*}</speaker>}</result>
