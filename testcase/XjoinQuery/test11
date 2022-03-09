@@ -1,8 +1,8 @@
-for $act in doc("j_caesar.xml")//ACT,
+for $act in doc("j_caesar_M3.xml")//ACT,
     $title in $act/SCENE/TITLE,
     $speaker1 in $act//SPEAKER/text(),
     $speaker2 in $act//SPEAKER/text(),
-    $pg in doc("j_caesar.xml")//PGROUP,
+    $pg in doc("j_caesar_M3.xml")//PGROUP,
     $persona1 in $pg/PERSONA/text(),
     $persona2 in $pg/PERSONA/text()
 

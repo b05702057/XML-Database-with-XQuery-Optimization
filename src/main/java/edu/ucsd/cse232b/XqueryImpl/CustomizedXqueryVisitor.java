@@ -475,8 +475,7 @@ public class CustomizedXqueryVisitor extends XqueryBaseVisitor<LinkedList> {
 
     private LinkedList<Node> copyNodes(LinkedList<Node> from) {
         LinkedList<Node> to = new LinkedList<>();
-        if (from == null) return to;
-        for (Node node: from) if (node != null) to.add(node);
+        for (Node node: from) to.add(node);
 
         return to;
     }

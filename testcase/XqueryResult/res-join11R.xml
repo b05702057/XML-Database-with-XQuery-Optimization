@@ -1,123 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
-    <result>
-        <title>SCENE I. Rome. A street.</title>
-    </result>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>FLAVIUS</persona1>
+        <persona2>FLAVIUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>FLAVIUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>FLAVIUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>FLAVIUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>FLAVIUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
+    <tuple>
+        <scene>SCENE I. Rome. A street.</scene>
+        <persona1>MARULLUS</persona1>
+        <persona2>MARULLUS</persona2>
+    </tuple>
 </result>
