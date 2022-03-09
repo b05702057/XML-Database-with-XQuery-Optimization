@@ -115,6 +115,10 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
                         int temp = group1;
                         group1 = group2;
                         group2 = temp;
+
+                        String tempString = eqCondition[0];
+                        eqCondition[0] = eqCondition[1];
+                        eqCondition[1] = tempString;
                     }
 
                     String key = group1 + "," + group2 ;

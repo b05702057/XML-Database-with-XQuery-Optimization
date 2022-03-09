@@ -14,7 +14,7 @@ $tc in $a/PERSONA
 where $tc eq "A Soothsayer"
 return <tuple>{ <a>{$a}</a>, <ta>{$ta}</ta>, <tc>{$tc}</tc> }</tuple>,
 
-[ta,tb], [tb,tc]),
+[tb,tb], [ta,tc]),
 
 [], [])
 return<result>{<title>{$tuple/b/*/TITLE}</title>,<name1>{$tuple/tb/*/text()}</name1>,<name2>{$tuple/ta/*/text()}</name2>,<name3>{$tuple/tc/*/text()}</name3>}</result>
