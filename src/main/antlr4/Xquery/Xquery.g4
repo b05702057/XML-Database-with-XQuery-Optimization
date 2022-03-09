@@ -9,8 +9,8 @@ xq  : var                                               #varXQ
     | STRING                                            #stringXQ
     | ap                                                #apXQ
     | '(' xq ')'                                        #braceXQ
-    | xq ',' xq                                         #commaXQ
     | xq '/' rp                                         #singleSlashXQ
+    | xq ',' xq                                         #commaXQ
     | xq '//' rp                                        #doubleSlashXQ
     | openTag '{' xq '}' closeTag                       #tagXQ
     | forClause letClause? whereClause? returnClause    #FLWR
