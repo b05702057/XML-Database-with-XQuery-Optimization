@@ -70,6 +70,8 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
             if (curCond.contains("\"")) {
                 boolean isFirstConstant = eqCondition[0].substring(0, 1).equals("\"");
                 boolean isSecondConstant = eqCondition[1].substring(0, 1).equals("\"");
+
+                // This case will not be included in the test cases.
                 // (1) both constants => push to every group
                 if (isFirstConstant && isSecondConstant) {
                     for (Integer key : groupVar.keySet()) {
@@ -217,7 +219,7 @@ public class CustomizedXjoinVisitor extends XjoinBaseVisitor<String> {
                 list1 += eqCond[0].substring(1) + ",";
                 list2 += eqCond[1].substring(1) + ",";
             }
-            list1 = list1.substring(0, list1.length() - 1) + "], ";
+            list1 = list1.substring(0, list1.length() - 1) + "], "; // strip the last comma
             list2 = list2.substring(0, list2.length() - 1) + "]";
             finalString += list1 + list2;
             finalString += "),\n";
