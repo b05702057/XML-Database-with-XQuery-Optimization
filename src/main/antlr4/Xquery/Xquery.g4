@@ -10,8 +10,8 @@ xq  : var                                               #varXQ
     | ap                                                #apXQ
     | '(' xq ')'                                        #braceXQ
     | xq '/' rp                                         #singleSlashXQ
-    | xq ',' xq                                         #commaXQ
     | xq '//' rp                                        #doubleSlashXQ
+    | xq ',' xq                                         #commaXQ
     | openTag '{' xq '}' closeTag                       #tagXQ
     | forClause letClause? whereClause? returnClause    #FLWR
     | letClause xq                                      #letXQ
