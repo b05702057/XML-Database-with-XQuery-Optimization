@@ -20,6 +20,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.logging.LogManager;
 
@@ -39,8 +41,13 @@ public class XqueryEngine {
             XqueryParser parser = new XqueryParser((new CommonTokenStream((lexer))));
             ParseTree tree = parser.xq();
 
+            Instant start = Instant.now();
             CustomizedXqueryVisitor visitor = new CustomizedXqueryVisitor();
             res = visitor.visit(tree);
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            System.out.println(timeElapsed); // milliseconds
+
             output = visitor.doc;
 
             write2File(output, res, resFilename);
